@@ -9,6 +9,33 @@
   },
   "entries": [
     {
+      "id": "the-test-network-has-a-new-root",
+      "date": "2026-11-15",
+      "kind": "network",
+      "major": true,
+      "title": "The test network has a new root. If you saved the old one, fetch it again",
+      "body": [
+        "The root of our test network came from a number written in our own source code. We did that so a test could be repeated exactly, and then used the same root for the network whose record this site publishes. That meant anyone could make a directory this site's roots would accept, and under it any passport they liked.",
+        "On 15 November we gave the published test network a root from a private seed. The old root is retired, and its two epochs stay on the site so the record is whole. If you saved the test network's roots before that day, fetch them again.",
+        "It is still a test root: one machine holds all of it. A real root, where nobody holds more than a share, needs a ceremony with independent custodians, and we will say when that is arranged. Our drills and sample files keep the repeatable root, and say so."
+      ],
+      "proof": [
+        {
+          "label": "Decision D-109",
+          "href": "https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md"
+        },
+        {
+          "label": "The roots now",
+          "href": "net/roots.json"
+        },
+        {
+          "label": "The retired root's history",
+          "href": "net/previous-root/jai1dHjh4wWCTKhq/epochs.json"
+        }
+      ],
+      "covers": {}
+    },
+    {
       "id": "links-take-p256-keys",
       "date": "2026-11-14",
       "kind": "rules",

@@ -248,25 +248,6 @@ if (side && sideTab) {
   if (fixedPanel) { addEventListener("scroll", apply, { passive: true }); addEventListener("resize", apply); }
 }
 
-// the cards drift slowly (about 27 px a second); pointing, focus, a touch or the arrows stop them for a while; off
-// screen they rest; with motion off they do not move. A hidden second set lets the row loop without a jump.
-const drift = document.querySelector(".g-asks__track");
-if (drift) {
-  let last = 0, rest = 0, on = false, hover = false, acc = 0; const SPEED = 26.7 / 1000;
-  const half = () => drift.scrollWidth / 2;
-  const tick = (now) => { const dt = last ? Math.min(64, now - last) : 0; last = now;
-    const moving = on && !hover && now > rest && html.dataset.motion !== "off";
-    drift.classList.toggle("is-drifting", moving);   // snapping would pull each small step back to a card
-    if (moving) { acc += SPEED * dt; const step = Math.floor(acc); if (step) { acc -= step; drift.scrollLeft += step; if (drift.scrollLeft >= half()) drift.scrollLeft -= half(); } }
-    requestAnimationFrame(tick); };
-  const pause = (ms = 6000) => { rest = performance.now() + ms; };
-  for (const [ev, v] of [["mouseenter", true], ["mouseleave", false], ["focusin", true], ["focusout", false]]) drift.addEventListener(ev, () => { hover = v; });
-  for (const ev of ["wheel", "touchstart", "pointerdown", "keydown"]) drift.addEventListener(ev, () => pause(), { passive: true });
-  document.querySelectorAll("[data-asks]").forEach((b) => b.addEventListener("click", () => pause()));
-  new IntersectionObserver((es) => { on = es[0].isIntersecting; }).observe(drift);
-  requestAnimationFrame(tick);
-}
-
 // inner pages: the title settles once the intro has wiped away (or at once without it)
 const gi = document.querySelector(".gi-hero");
 if (gi) setTimeout(() => gi.classList.add("is-in"), document.getElementById("gIntro") && html.classList.contains("rv") ? 950 : 0);

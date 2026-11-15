@@ -1,0 +1,4 @@
+{
+  "retired_at_iso": "2026-11-15T08:50:01Z",
+  "note": "The root this network used until that day. Its epochs are kept here as they were published. The root in ../../roots.json replaced it; docs/DECISIONS.md says why."
+}

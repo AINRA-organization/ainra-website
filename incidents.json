@@ -195,6 +195,20 @@
         "file": "SECURITY.md",
         "heading": "Post-mortem: the site showed four test passports as VALID that their registrar refused"
       }
+    },
+    {
+      "id": "INC-2026-013",
+      "class": "LOW",
+      "surface": "the pilot kit (kits/pilot) without --watch, in tagged releases since v0.5.0; a kit run from a checkout, in no published package; availability only; the fix is on main and ships in the next release",
+      "title": "The pilot in front of a service could be stopped by one request it could not read",
+      "opened": "2026-11-12",
+      "disclosed": "2026-11-13",
+      "fixed": "2026-11-15",
+      "released": null,
+      "record": {
+        "file": "SECURITY.md",
+        "heading": "Post-mortem: the pilot could be stopped by a request it could not read"
+      }
     }
   ],
   "not_incidents": [
