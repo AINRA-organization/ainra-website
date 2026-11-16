@@ -47,13 +47,6 @@ p a,.lede a,.small a,.link-hook,.legal a{background:linear-gradient(currentColor
 p a:hover,.lede a:hover,.small a:hover,.link-hook:hover,.legal a:hover{background-size:100% 2px}
 .btn-ghost:hover{background:var(--ink);color:var(--paper)}
 .btn:active{transform:translateY(1px)}
-.btn-ink{position:relative}
-.btn-ink::after{content:"";position:absolute;inset:-6px;pointer-events:none;transition:inset var(--t) var(--ease-out);background:
-  linear-gradient(var(--ink),var(--ink)) left top / 6px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) left top / 1px 6px no-repeat,
-  linear-gradient(var(--ink),var(--ink)) right top / 6px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) right top / 1px 6px no-repeat,
-  linear-gradient(var(--ink),var(--ink)) left bottom / 6px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) left bottom / 1px 6px no-repeat,
-  linear-gradient(var(--ink),var(--ink)) right bottom / 6px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) right bottom / 1px 6px no-repeat}
-.btn-ink:hover::after{inset:-8px}
 
 /* M04 Life state glyphs */
 .glyph{display:inline-block;width:24px;height:24px;flex:none;vertical-align:middle}
@@ -143,7 +136,7 @@ html[data-motion="off"] .ticker__btn{display:none}
 @media (prefers-contrast:more){.life__field canvas{display:none}}
 @media (prefers-reduced-transparency:reduce){.life__field canvas{display:none}}
 
-/* M06 globe readouts inside the crop marks */
+/* M06 globe readouts */
 .globe{display:grid}
 .globe > canvas{grid-area:1 / 1}
 .globe__ro{grid-area:1 / 1;display:grid;grid-template-rows:auto 1fr auto;padding:14px 16px;pointer-events:none;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}

@@ -198,8 +198,6 @@ a.index-row:focus-visible,button.index-row:focus-visible{outline:2px solid var(-
 
 /* C7 figure frame */
 .fig{position:relative;background:var(--card);border:1px solid var(--line);margin:8px}
-.fig::before{content:"";position:absolute;inset:-9px;pointer-events:none;background:
-  linear-gradient(var(--ink),var(--ink)) left top / 14px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) left top / 1px 14px no-repeat,linear-gradient(var(--ink),var(--ink)) right top / 14px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) right top / 1px 14px no-repeat,linear-gradient(var(--ink),var(--ink)) left bottom / 14px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) left bottom / 1px 14px no-repeat,linear-gradient(var(--ink),var(--ink)) right bottom / 14px 1px no-repeat,linear-gradient(var(--ink),var(--ink)) right bottom / 1px 14px no-repeat}
 .fig__body{padding:var(--s5)}
 .fig > figcaption,.fig__cap{display:flex;justify-content:space-between;gap:var(--s4);flex-wrap:wrap;border-top:1px dashed var(--line);padding:var(--s3) var(--s4);text-transform:uppercase;color:var(--muted)}
 .fig__tag{color:var(--ink)}

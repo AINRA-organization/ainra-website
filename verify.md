@@ -172,7 +172,7 @@ KYB-verified operator + a checked principal proof + liability insurance attestat
 
 ## Prove yours.
 
-A real registrar, a real transparency log, and real verdicts computed on your own machine from the log's own inclusion proofs.
+Get a passport for your own agent from the test registrar, then check it here, on your machine, against the registrar's public log.
 
 Network
 

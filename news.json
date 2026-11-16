@@ -9,6 +9,33 @@
   },
   "entries": [
     {
+      "id": "issuer-links",
+      "date": "2026-11-16",
+      "kind": "rules",
+      "major": false,
+      "title": "One link can now answer for every token an identity system issues",
+      "body": [
+        "Most AI agents do not sign their own requests. They carry a token from the identity system their company already uses, signed with that system's key. Until now a link answered for one key that signed requests, so those agents were out of reach.",
+        "A link can now be for the issuing key itself. The system signs one statement with it, once. After that, a service that has checked a token the way it always does can ask one more question, offline: who answers for this issuer, and is that still true? Withdraw the link and every token that key signs is refused.",
+        "We wrote down what this does not mean, because it is easy to read too much into it. It does not say the key belongs to the issuer it names; a service still learns that from the issuer. It does not vouch for the agent a token names. And no outside system has linked a key yet: the issuer in our test is one we start ourselves. It is on the main branch, with twenty-two new test vectors that all three of our verifiers agree on."
+      ],
+      "proof": [
+        {
+          "label": "Decision D-110",
+          "href": "https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md"
+        },
+        {
+          "label": "How issuer links work",
+          "href": "https://github.com/JacobJandon/ainra/blob/main/docs/LINKS.md#issuer-links"
+        },
+        {
+          "label": "The kit",
+          "href": "https://github.com/JacobJandon/ainra/tree/main/kits/issuer-link"
+        }
+      ],
+      "covers": {}
+    },
+    {
       "id": "the-test-network-has-a-new-root",
       "date": "2026-11-15",
       "kind": "network",

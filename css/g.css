@@ -816,18 +816,6 @@ nav:not([class]) .nav-r .g-menubtn[aria-expanded="true"]{background:var(--ink);c
 @media (max-width:700px),(max-aspect-ratio:5/4){.g-hero__plate .g-lead__cta{margin-top:18px}}
 @media (max-height:639px) and (min-width:701px) and (min-aspect-ratio:5/4){.g-hero__plate .g-lead__cta{margin-top:14px}}
 .g-lead__in{grid-template-columns:minmax(0,1fr)}
-.g-proof{padding:clamp(28px,3.4vw,52px) 0;border-bottom:1px solid var(--line)}
-.g-proof__k{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 clamp(16px,2vw,26px)}
-.g-proof__row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:0;border-top:1px solid var(--line)}
-.g-proof__row > div{padding:18px 24px 6px 0;border-right:1px solid var(--line);margin-right:24px}
-.g-proof__row > div:last-child{border-right:0;margin-right:0}
-.g-proof__row dt{font-size:14px;color:var(--ink-soft,#3A4250);margin:0 0 6px}
-.g-proof__row dd{margin:0;font-size:clamp(40px,4.4vw,64px);line-height:1;letter-spacing:-.03em;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
-.g-proof__src{margin:10px 0 0;font-size:13px;color:var(--muted)}
-.g-proof__src code{font-size:12px}
-.g-proof__go{display:inline-block;margin-top:clamp(18px,2vw,28px);font-weight:500;color:var(--ink);text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
-.g-proof__go:hover{color:var(--signal-ink,#2346D8)}
-@media (max-width:800px){.g-proof__row{grid-template-columns:repeat(2,minmax(0,1fr))}.g-proof__row > div:nth-child(2n){border-right:0;margin-right:0}.g-proof__row > div{border-bottom:1px solid var(--line)}}
 /* inner pages: the page's name is a title, not the whole first screen (it was 158 px tall at 1440 wide, and the first
    real sentence started 650–830 px down a 900 px screen); the page's own statement now starts on screen one */
 .gi-hero{padding-top:110px;padding-bottom:clamp(20px,2.6vw,36px)}

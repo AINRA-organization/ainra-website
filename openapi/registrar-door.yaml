@@ -160,7 +160,7 @@ paths:
         400:
           description: bad spec / proof of control fails
         403:
-          description: not a demo specimen / not staging
+          description: "not a demo specimen / not staging / an issuer link (D-110: this door links keys only)"
         429:
           description: rate limited
   /demo/link/revoke:
