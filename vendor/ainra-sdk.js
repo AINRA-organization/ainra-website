@@ -13,7 +13,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// node_modules/fflate/esm/browser.js
+// ../../../ainra/packages/sdk-ts/node_modules/fflate/esm/browser.js
 var u8 = Uint8Array;
 var u16 = Uint16Array;
 var i32 = Int32Array;
@@ -433,10 +433,10 @@ function enc(v) {
   return "{" + keys.map((k) => JSON.stringify(k) + ":" + enc(o[k])).join(",") + "}";
 }
 
-// node_modules/@noble/hashes/esm/crypto.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/hashes/esm/crypto.js
 var crypto = typeof globalThis === "object" && "crypto" in globalThis ? globalThis.crypto : void 0;
 
-// node_modules/@noble/hashes/esm/utils.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/hashes/esm/utils.js
 function isBytes(a) {
   return a instanceof Uint8Array || ArrayBuffer.isView(a) && a.constructor.name === "Uint8Array";
 }
@@ -572,7 +572,7 @@ function randomBytes(bytesLength = 32) {
   throw new Error("crypto.getRandomValues must be defined");
 }
 
-// node_modules/@noble/hashes/esm/_md.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/hashes/esm/_md.js
 function setBigUint64(view, byteOffset, value, isLE2) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE2);
@@ -691,6 +691,24 @@ var SHA256_IV = /* @__PURE__ */ Uint32Array.from([
   528734635,
   1541459225
 ]);
+var SHA384_IV = /* @__PURE__ */ Uint32Array.from([
+  3418070365,
+  3238371032,
+  1654270250,
+  914150663,
+  2438529370,
+  812702999,
+  355462360,
+  4144912697,
+  1731405415,
+  4290775857,
+  2394180231,
+  1750603025,
+  3675008525,
+  1694076839,
+  1203062813,
+  3204075428
+]);
 var SHA512_IV = /* @__PURE__ */ Uint32Array.from([
   1779033703,
   4089235720,
@@ -710,7 +728,7 @@ var SHA512_IV = /* @__PURE__ */ Uint32Array.from([
   327033209
 ]);
 
-// node_modules/@noble/hashes/esm/_u64.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/hashes/esm/_u64.js
 var U32_MASK64 = /* @__PURE__ */ BigInt(2 ** 32 - 1);
 var _32n = /* @__PURE__ */ BigInt(32);
 function fromBig(n, le = false) {
@@ -745,7 +763,7 @@ var add4H = (low, Ah, Bh, Ch, Dh) => Ah + Bh + Ch + Dh + (low / 2 ** 32 | 0) | 0
 var add5L = (Al, Bl, Cl, Dl, El) => (Al >>> 0) + (Bl >>> 0) + (Cl >>> 0) + (Dl >>> 0) + (El >>> 0);
 var add5H = (low, Ah, Bh, Ch, Dh, Eh) => Ah + Bh + Ch + Dh + Eh + (low / 2 ** 32 | 0) | 0;
 
-// node_modules/@noble/hashes/esm/sha2.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/hashes/esm/sha2.js
 var SHA256_K = /* @__PURE__ */ Uint32Array.from([
   1116352408,
   1899447441,
@@ -1080,10 +1098,164 @@ var SHA512 = class extends HashMD {
     this.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 };
+var SHA384 = class extends SHA512 {
+  constructor() {
+    super(48);
+    this.Ah = SHA384_IV[0] | 0;
+    this.Al = SHA384_IV[1] | 0;
+    this.Bh = SHA384_IV[2] | 0;
+    this.Bl = SHA384_IV[3] | 0;
+    this.Ch = SHA384_IV[4] | 0;
+    this.Cl = SHA384_IV[5] | 0;
+    this.Dh = SHA384_IV[6] | 0;
+    this.Dl = SHA384_IV[7] | 0;
+    this.Eh = SHA384_IV[8] | 0;
+    this.El = SHA384_IV[9] | 0;
+    this.Fh = SHA384_IV[10] | 0;
+    this.Fl = SHA384_IV[11] | 0;
+    this.Gh = SHA384_IV[12] | 0;
+    this.Gl = SHA384_IV[13] | 0;
+    this.Hh = SHA384_IV[14] | 0;
+    this.Hl = SHA384_IV[15] | 0;
+  }
+};
 var sha256 = /* @__PURE__ */ createHasher(() => new SHA256());
 var sha512 = /* @__PURE__ */ createHasher(() => new SHA512());
+var sha384 = /* @__PURE__ */ createHasher(() => new SHA384());
 
-// node_modules/@noble/curves/esm/utils.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/hashes/esm/sha256.js
+var sha2562 = sha256;
+
+// src/rsa.ts
+var RSA_MIN_BITS = 2048;
+var RSA_MAX_BITS = 4096;
+var RSA_EXPONENT = Uint8Array.of(1, 0, 1);
+var RSA_MAX_BYTES = RSA_MAX_BITS / 8;
+var RSA_ALG_ID = Uint8Array.of(48, 13, 6, 9, 42, 134, 72, 134, 247, 13, 1, 1, 1, 5, 0);
+var SHA256_DIGEST_INFO = Uint8Array.of(48, 49, 48, 13, 6, 9, 96, 134, 72, 1, 101, 3, 4, 2, 1, 5, 0, 4, 32);
+function cat(...parts) {
+  const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
+  let at = 0;
+  for (const p of parts) {
+    out.set(p, at);
+    at += p.length;
+  }
+  return out;
+}
+function derLen(n) {
+  if (n < 128) return Uint8Array.of(n);
+  if (n < 256) return Uint8Array.of(129, n);
+  return Uint8Array.of(130, n >> 8, n & 255);
+}
+function tlv(tag, content) {
+  return cat(Uint8Array.of(tag), derLen(content.length), content);
+}
+function eq(a, b) {
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i2 = 0; i2 < a.length; i2++) d |= a[i2] ^ b[i2];
+  return d === 0;
+}
+function rsaSpki(n) {
+  const nInt = n.length > 0 && (n[0] & 128) !== 0 ? cat(Uint8Array.of(0), n) : n;
+  const rsaPk = tlv(48, cat(tlv(2, nInt), tlv(2, RSA_EXPONENT)));
+  return tlv(48, cat(RSA_ALG_ID, tlv(3, cat(Uint8Array.of(0), rsaPk))));
+}
+function rsaSpkiModulus(der) {
+  const header = (at) => {
+    if (at + 1 >= der.length) return null;
+    const first = der[at + 1];
+    if (first < 128) return [at + 2, first];
+    const k = first & 127;
+    if (k === 0 || k > 2 || at + 2 + k > der.length) return null;
+    let len = 0;
+    for (let i2 = 0; i2 < k; i2++) len = len << 8 | der[at + 2 + i2];
+    return [at + 2 + k, len];
+  };
+  const body = header(0);
+  if (!body) return null;
+  const bits2 = header(body[0] + RSA_ALG_ID.length);
+  if (!bits2) return null;
+  const seq = header(bits2[0] + 1);
+  if (!seq || der[seq[0]] !== 2) return null;
+  const nh = header(seq[0]);
+  if (!nh || nh[0] + nh[1] > der.length) return null;
+  let n = der.subarray(nh[0], nh[0] + nh[1]);
+  if (n.length > 0 && n[0] === 0) n = n.subarray(1);
+  if (n.length === 0 || n[0] === 0 || n.length > RSA_MAX_BYTES || (n[n.length - 1] & 1) === 0) return null;
+  const nBits = n.length * 8 - Math.clz32(n[0]) + 24;
+  if (nBits < RSA_MIN_BITS || nBits > RSA_MAX_BITS) return null;
+  return eq(rsaSpki(n), der) ? n.slice() : null;
+}
+function os2ip(b) {
+  let x2 = 0n;
+  for (const v of b) x2 = x2 << 8n | BigInt(v);
+  return x2;
+}
+function i2osp(x2, len) {
+  const out = new Uint8Array(len);
+  for (let i2 = len - 1; i2 >= 0; i2--) {
+    out[i2] = Number(x2 & 0xffn);
+    x2 >>= 8n;
+  }
+  return x2 === 0n ? out : null;
+}
+function pow65537(s, n) {
+  let r = s;
+  for (let i2 = 0; i2 < 16; i2++) r = r * r % n;
+  return r * s % n;
+}
+function mgf1(seed, len) {
+  const out = new Uint8Array(len);
+  let at = 0;
+  for (let c = 0; at < len; c++) {
+    const h = sha2562(cat(seed, Uint8Array.of(c >>> 24, c >>> 16 & 255, c >>> 8 & 255, c & 255)));
+    out.set(h.subarray(0, Math.min(32, len - at)), at);
+    at += 32;
+  }
+  return out;
+}
+function rsaVerify(n, pss, msg, sig) {
+  const k = n.length;
+  if (k === 0 || sig.length !== k) return false;
+  const nn = os2ip(n);
+  const s = os2ip(sig);
+  if (s >= nn) return false;
+  const m = pow65537(s, nn);
+  const mHash = sha2562(msg);
+  if (!pss) {
+    const t = cat(SHA256_DIGEST_INFO, mHash);
+    if (k < t.length + 11) return false;
+    const em2 = new Uint8Array(k);
+    em2[1] = 1;
+    em2.fill(255, 2, k - t.length - 1);
+    em2.set(t, k - t.length);
+    const got = i2osp(m, k);
+    return got !== null && eq(got, em2);
+  }
+  const hLen = 32, sLen = 32;
+  const modBits = k * 8 - Math.clz32(n[0]) + 24;
+  const emBits = modBits - 1;
+  const emLen = Math.ceil(emBits / 8);
+  const em = i2osp(m, emLen);
+  if (em === null) return false;
+  if (emLen < hLen + sLen + 2) return false;
+  if (em[emLen - 1] !== 188) return false;
+  const maskedDb = em.subarray(0, emLen - hLen - 1);
+  const h = em.subarray(emLen - hLen - 1, emLen - 1);
+  const topMask = 255 >> 8 * emLen - emBits;
+  if ((maskedDb[0] & ~topMask & 255) !== 0) return false;
+  const db = mgf1(h, maskedDb.length);
+  for (let i2 = 0; i2 < db.length; i2++) db[i2] ^= maskedDb[i2];
+  db[0] &= topMask;
+  const ps = emLen - hLen - sLen - 2;
+  for (let i2 = 0; i2 < ps; i2++) if (db[i2] !== 0) return false;
+  if (db[ps] !== 1) return false;
+  const salt = db.subarray(db.length - sLen);
+  return eq(sha2562(cat(new Uint8Array(8), mHash, salt)), h);
+}
+
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/utils.js
 var _0n = /* @__PURE__ */ BigInt(0);
 var _1n = /* @__PURE__ */ BigInt(1);
 function _abool2(value, title = "") {
@@ -1250,7 +1422,7 @@ function memoized(fn) {
   };
 }
 
-// node_modules/@noble/curves/esm/abstract/modular.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/abstract/modular.js
 var _0n2 = BigInt(0);
 var _1n2 = BigInt(1);
 var _2n = /* @__PURE__ */ BigInt(2);
@@ -1596,7 +1768,7 @@ function mapHashToField(key, fieldOrder, isLE2 = false) {
   return isLE2 ? numberToBytesLE(reduced, fieldLen) : numberToBytesBE(reduced, fieldLen);
 }
 
-// node_modules/@noble/curves/esm/abstract/curve.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/abstract/curve.js
 var _0n3 = BigInt(0);
 var _1n3 = BigInt(1);
 function negateCt(condition, item) {
@@ -1874,7 +2046,7 @@ function _createCurveFields(type, CURVE, curveOpts = {}, FpFnLE) {
   return { CURVE, Fp: Fp2, Fn: Fn2 };
 }
 
-// node_modules/@noble/curves/esm/abstract/edwards.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/abstract/edwards.js
 var _0n4 = BigInt(0);
 var _1n4 = BigInt(1);
 var _2n2 = BigInt(2);
@@ -2425,7 +2597,7 @@ function twistedEdwards(c) {
   return _eddsa_new_output_to_legacy(c, EDDSA);
 }
 
-// node_modules/@noble/curves/esm/ed25519.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/ed25519.js
 var _0n5 = /* @__PURE__ */ BigInt(0);
 var _1n5 = BigInt(1);
 var _2n3 = BigInt(2);
@@ -2648,7 +2820,7 @@ _RistrettoPoint.ZERO = /* @__PURE__ */ (() => new _RistrettoPoint(ed25519.Point.
 _RistrettoPoint.Fp = /* @__PURE__ */ (() => Fp)();
 _RistrettoPoint.Fn = /* @__PURE__ */ (() => Fn)();
 
-// node_modules/@noble/hashes/esm/hmac.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/hashes/esm/hmac.js
 var HMAC = class extends Hash {
   constructor(hash, _key) {
     super();
@@ -2716,7 +2888,7 @@ var HMAC = class extends Hash {
 var hmac = (hash, key, message) => new HMAC(hash, key).update(message).digest();
 hmac.create = (hash, key) => new HMAC(hash, key);
 
-// node_modules/@noble/curves/esm/abstract/weierstrass.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/abstract/weierstrass.js
 var divNearest = (num, den) => (num + (num >= 0 ? den : -den) / _2n4) / den;
 function _splitEndoScalar(k, basis, n) {
   const [[a1, b1], [a2, b2]] = basis;
@@ -2838,23 +3010,23 @@ var DER = {
     }
   },
   toSig(hex) {
-    const { Err: E, _int: int, _tlv: tlv } = DER;
+    const { Err: E, _int: int, _tlv: tlv2 } = DER;
     const data = ensureBytes("signature", hex);
-    const { v: seqBytes, l: seqLeftBytes } = tlv.decode(48, data);
+    const { v: seqBytes, l: seqLeftBytes } = tlv2.decode(48, data);
     if (seqLeftBytes.length)
       throw new E("invalid signature: left bytes after parsing");
-    const { v: rBytes, l: rLeftBytes } = tlv.decode(2, seqBytes);
-    const { v: sBytes, l: sLeftBytes } = tlv.decode(2, rLeftBytes);
+    const { v: rBytes, l: rLeftBytes } = tlv2.decode(2, seqBytes);
+    const { v: sBytes, l: sLeftBytes } = tlv2.decode(2, rLeftBytes);
     if (sLeftBytes.length)
       throw new E("invalid signature: left bytes after parsing");
     return { r: int.decode(rBytes), s: int.decode(sBytes) };
   },
   hexFromSig(sig) {
-    const { _tlv: tlv, _int: int } = DER;
-    const rs = tlv.encode(2, int.encode(sig.r));
-    const ss = tlv.encode(2, int.encode(sig.s));
+    const { _tlv: tlv2, _int: int } = DER;
+    const rs = tlv2.encode(2, int.encode(sig.r));
+    const ss = tlv2.encode(2, int.encode(sig.s));
     const seq = rs + ss;
-    return tlv.encode(48, seq);
+    return tlv2.encode(48, seq);
   }
 };
 var _0n6 = BigInt(0);
@@ -3730,13 +3902,13 @@ function weierstrass(c) {
   return _ecdsa_new_output_to_legacy(c, signs);
 }
 
-// node_modules/@noble/curves/esm/_shortw_utils.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/_shortw_utils.js
 function createCurve(curveDef, defHash) {
   const create = (hash) => weierstrass({ ...curveDef, hash });
   return { ...create(defHash), create };
 }
 
-// node_modules/@noble/curves/esm/secp256k1.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/secp256k1.js
 var secp256k1_CURVE = {
   p: BigInt("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f"),
   n: BigInt("0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141"),
@@ -3779,7 +3951,45 @@ function sqrtMod(y) {
 var Fpk1 = Field(secp256k1_CURVE.p, { sqrt: sqrtMod });
 var secp256k1 = createCurve({ ...secp256k1_CURVE, Fp: Fpk1, lowS: true, endo: secp256k1_ENDO }, sha256);
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/_assert.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/nist.js
+var p256_CURVE = {
+  p: BigInt("0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff"),
+  n: BigInt("0xffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551"),
+  h: BigInt(1),
+  a: BigInt("0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc"),
+  b: BigInt("0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b"),
+  Gx: BigInt("0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296"),
+  Gy: BigInt("0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5")
+};
+var p384_CURVE = {
+  p: BigInt("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffff0000000000000000ffffffff"),
+  n: BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffc7634d81f4372ddf581a0db248b0a77aecec196accc52973"),
+  h: BigInt(1),
+  a: BigInt("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffeffffffff0000000000000000fffffffc"),
+  b: BigInt("0xb3312fa7e23ee7e4988e056be3f82d19181d9c6efe8141120314088f5013875ac656398d8a2ed19d2a85c8edd3ec2aef"),
+  Gx: BigInt("0xaa87ca22be8b05378eb1c71ef320ad746e1d3b628ba79b9859f741e082542a385502f25dbf55296c3a545e3872760ab7"),
+  Gy: BigInt("0x3617de4a96262c6f5d9e98bf9292dc29f8f41dbd289a147ce9da3113b5f0b8c00a60b1ce1d7e819d7a431d7c90ea0e5f")
+};
+var p521_CURVE = {
+  p: BigInt("0x1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
+  n: BigInt("0x01fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffa51868783bf2f966b7fcc0148f709a5d03bb5c9b8899c47aebb6fb71e91386409"),
+  h: BigInt(1),
+  a: BigInt("0x1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc"),
+  b: BigInt("0x0051953eb9618e1c9a1f929a21a0b68540eea2da725b99b315f3b8b489918ef109e156193951ec7e937b1652c0bd3bb1bf073573df883d2c34f1ef451fd46b503f00"),
+  Gx: BigInt("0x00c6858e06b70404e9cd9e3ecb662395b4429c648139053fb521f828af606b4d3dbaa14b5e77efe75928fe1dc127a2ffa8de3348b3c1856a429bf97e7e31c2e5bd66"),
+  Gy: BigInt("0x011839296a789a3bc0045c8a5fb42c7d1bd998f54449579b446817afbd17273e662c97ee72995ef42640c550b9013fad0761353c7086a272c24088be94769fd16650")
+};
+var Fp256 = Field(p256_CURVE.p);
+var Fp384 = Field(p384_CURVE.p);
+var Fp521 = Field(p521_CURVE.p);
+var p256 = createCurve({ ...p256_CURVE, Fp: Fp256, lowS: false }, sha256);
+var p384 = createCurve({ ...p384_CURVE, Fp: Fp384, lowS: false }, sha384);
+var p521 = createCurve({ ...p521_CURVE, Fp: Fp521, lowS: false, allowedPrivateKeyLengths: [130, 131, 132] }, sha512);
+
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/curves/esm/p256.js
+var p2562 = p256;
+
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/_assert.js
 function anumber2(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error("positive integer expected, got " + n);
@@ -3813,7 +4023,7 @@ function aoutput2(out, instance) {
   }
 }
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/_u64.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/_u64.js
 var U32_MASK642 = /* @__PURE__ */ BigInt(2 ** 32 - 1);
 var _32n2 = /* @__PURE__ */ BigInt(32);
 function fromBig2(n, le = false) {
@@ -3879,10 +4089,10 @@ var u64 = {
 };
 var u64_default = u64;
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/crypto.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/crypto.js
 var crypto2 = typeof globalThis === "object" && "crypto" in globalThis ? globalThis.crypto : void 0;
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/utils.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/utils.js
 var u32 = (arr) => new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
 var createView2 = (arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
 var rotr2 = (word, shift) => word << 32 - shift | word >>> shift;
@@ -3989,7 +4199,7 @@ function randomBytes2(bytesLength = 32) {
   throw new Error("crypto.getRandomValues must be defined");
 }
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/sha3.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/sha3.js
 var SHA3_PI = [];
 var SHA3_ROTL = [];
 var _SHA3_IOTA = [];
@@ -4175,7 +4385,7 @@ var genShake = (suffix, blockLen, outputLen) => wrapXOFConstructorWithOpts((opts
 var shake128 = /* @__PURE__ */ genShake(31, 168, 128 / 8);
 var shake256 = /* @__PURE__ */ genShake(31, 136, 256 / 8);
 
-// node_modules/@noble/post-quantum/esm/utils.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/esm/utils.js
 var ensureBytes2 = abytes2;
 var randomBytes3 = randomBytes2;
 function equalBytes2(a, b) {
@@ -4256,7 +4466,7 @@ function getMask(bits2) {
   return (1 << bits2) - 1;
 }
 
-// node_modules/@noble/post-quantum/esm/_crystals.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/esm/_crystals.js
 function bitReversal(n, bits2 = 8) {
   const padded = n.toString(2).padStart(8, "0");
   const sliced = padded.slice(-bits2).padStart(7, "0");
@@ -4377,7 +4587,7 @@ var createXofShake = (shake) => (seed, blockLen) => {
 var XOF128 = /* @__PURE__ */ createXofShake(shake128);
 var XOF256 = /* @__PURE__ */ createXofShake(shake256);
 
-// node_modules/@noble/post-quantum/esm/ml-dsa.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/esm/ml-dsa.js
 var N = 256;
 var Q = 8380417;
 var ROOT_OF_UNITY = 1753;
@@ -4795,7 +5005,7 @@ var ml_dsa87 = /* @__PURE__ */ getDilithium({
   XOF256
 });
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/hmac.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/hmac.js
 var HMAC2 = class extends Hash2 {
   constructor(hash, _key) {
     super();
@@ -4860,7 +5070,7 @@ var HMAC2 = class extends Hash2 {
 var hmac2 = (hash, key, message) => new HMAC2(hash, key).update(message).digest();
 hmac2.create = (hash, key) => new HMAC2(hash, key);
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/_md.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/_md.js
 function setBigUint642(view, byteOffset, value, isLE2) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE2);
@@ -4962,7 +5172,7 @@ var HashMD2 = class extends Hash2 {
   }
 };
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/sha256.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/sha256.js
 var SHA256_K2 = /* @__PURE__ */ new Uint32Array([
   1116352408,
   1899447441,
@@ -5110,9 +5320,9 @@ var SHA2562 = class extends HashMD2 {
     this.buffer.fill(0);
   }
 };
-var sha2562 = /* @__PURE__ */ wrapConstructor(() => new SHA2562());
+var sha2563 = /* @__PURE__ */ wrapConstructor(() => new SHA2562());
 
-// node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/sha512.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/node_modules/@noble/hashes/esm/sha512.js
 var [SHA512_Kh2, SHA512_Kl2] = /* @__PURE__ */ (() => u64_default.split([
   "0x428a2f98d728ae22",
   "0x7137449123ef65cd",
@@ -5311,7 +5521,7 @@ var SHA5122 = class extends HashMD2 {
 };
 var sha5122 = /* @__PURE__ */ wrapConstructor(() => new SHA5122());
 
-// node_modules/@noble/post-quantum/esm/slh-dsa.js
+// ../../../ainra/packages/sdk-ts/node_modules/@noble/post-quantum/esm/slh-dsa.js
 var PARAMS2 = {
   "128f": { W: 16, N: 16, H: 66, D: 22, K: 33, A: 6 },
   "128s": { W: 16, N: 16, H: 63, D: 7, K: 14, A: 12 },
@@ -5740,7 +5950,7 @@ var genSha = (h0, h1) => (opts) => (pub_seed, sk_seed) => {
   const h1ps = h1.create().update(pub_seed).update(new Uint8Array(h1.blockLen - N2));
   const h0tmp = h0ps.clone();
   const h1tmp = h1ps.clone();
-  function mgf1(seed, length, hash) {
+  function mgf12(seed, length, hash) {
     stats.mgf1++;
     const out = new Uint8Array(Math.ceil(length / hash.outputLen) * hash.outputLen);
     if (length > 2 ** 32)
@@ -5773,7 +5983,7 @@ var genSha = (h0, h1) => (opts) => (pub_seed, sk_seed) => {
     Hmsg: (R, pk, m, outLen) => {
       stats.hmsg++;
       const seed = concatBytes2(R.subarray(0, N2), pk.subarray(0, N2), h1.create().update(R.subarray(0, N2)).update(pk).update(m).digest());
-      return mgf1(seed, outLen, h1);
+      return mgf12(seed, outLen, h1);
     },
     thash1: thash(h0, h0ps, h0tmp).bind(null, 1),
     thashN: thash(h1, h1ps, h1tmp),
@@ -5787,11 +5997,11 @@ var genSha = (h0, h1) => (opts) => (pub_seed, sk_seed) => {
 };
 var SHA256_SIMPLE = {
   isCompressed: true,
-  getContext: genSha(sha2562, sha2562)
+  getContext: genSha(sha2563, sha2563)
 };
 var SHA512_SIMPLE = {
   isCompressed: true,
-  getContext: genSha(sha2562, sha5122)
+  getContext: genSha(sha2563, sha5122)
 };
 var slh_dsa_sha2_128f = /* @__PURE__ */ gen2(PARAMS2["128f"], SHA256_SIMPLE);
 var slh_dsa_sha2_128s = /* @__PURE__ */ gen2(PARAMS2["128s"], SHA256_SIMPLE);
@@ -5799,9 +6009,6 @@ var slh_dsa_sha2_192f = /* @__PURE__ */ gen2(PARAMS2["192f"], SHA512_SIMPLE);
 var slh_dsa_sha2_192s = /* @__PURE__ */ gen2(PARAMS2["192s"], SHA512_SIMPLE);
 var slh_dsa_sha2_256f = /* @__PURE__ */ gen2(PARAMS2["256f"], SHA512_SIMPLE);
 var slh_dsa_sha2_256s = /* @__PURE__ */ gen2(PARAMS2["256s"], SHA512_SIMPLE);
-
-// node_modules/@noble/hashes/esm/sha256.js
-var sha2563 = sha256;
 
 // src/crypto.ts
 var ED25519_PK = 32;
@@ -5858,22 +6065,22 @@ function hashLeaf(data) {
   const buf = new Uint8Array(1 + data.length);
   buf[0] = 0;
   buf.set(data, 1);
-  return sha2563(buf);
+  return sha2562(buf);
 }
 function hashNode(l, r) {
   const buf = new Uint8Array(1 + 32 + 32);
   buf[0] = 1;
   buf.set(l, 1);
   buf.set(r, 33);
-  return sha2563(buf);
+  return sha2562(buf);
 }
-function eq(a, b) {
+function eq2(a, b) {
   if (a.length !== b.length) return false;
   for (let i2 = 0; i2 < a.length; i2++) if (a[i2] !== b[i2]) return false;
   return true;
 }
 function verifyInclusion(leaf, index, treeSize, proof, root) {
-  if (index >= treeSize) return false;
+  if (!Number.isSafeInteger(index) || !Number.isSafeInteger(treeSize) || index < 0 || index >= treeSize) return false;
   let fn = index;
   let sn = treeSize - 1;
   let r = leaf;
@@ -5893,14 +6100,14 @@ function verifyInclusion(leaf, index, treeSize, proof, root) {
     fn >>= 1;
     sn >>= 1;
   }
-  return sn === 0 && eq(r, root);
+  return sn === 0 && eq2(r, root);
 }
 function es256kVerify(pk, msg, sig) {
   if (pk.length !== 33 || pk[0] !== 2 && pk[0] !== 3 || sig.length !== 64) return false;
   try {
     const s = secp256k1.Signature.fromCompact(sig);
     if (s.hasHighS()) return false;
-    return secp256k1.verify(sig, sha2563(msg), pk, { lowS: true, prehash: false, format: "compact" });
+    return secp256k1.verify(sig, sha2562(msg), pk, { lowS: true, prehash: false, format: "compact" });
   } catch {
     return false;
   }
@@ -5909,6 +6116,25 @@ function secp256k1Affine(pk) {
   if (pk.length !== 33 || pk[0] !== 2 && pk[0] !== 3) return null;
   try {
     const u = secp256k1.ProjectivePoint.fromHex(pk).toRawBytes(false);
+    return { x: u.slice(1, 33), y: u.slice(33, 65) };
+  } catch {
+    return null;
+  }
+}
+function es256Verify(pk, msg, sig) {
+  if (pk.length !== 65 || pk[0] !== 4 || sig.length !== 64) return false;
+  try {
+    const s = p2562.Signature.fromCompact(sig);
+    if (s.hasHighS()) return false;
+    return p2562.verify(sig, sha2562(msg), pk, { lowS: true, prehash: false, format: "compact" });
+  } catch {
+    return false;
+  }
+}
+function p256Affine(pk) {
+  if (pk.length !== 65 || pk[0] !== 4) return null;
+  try {
+    const u = p2562.ProjectivePoint.fromHex(pk).toRawBytes(false);
     return { x: u.slice(1, 33), y: u.slice(33, 65) };
   } catch {
     return null;
@@ -5936,7 +6162,7 @@ function joinPresentation(stable, pop) {
 }
 function presentationRef(bundle) {
   const { stable } = splitPresentation(bundle);
-  return `sha-256=:${b64std(sha2563(enc2.encode(canonicalize(stable))))}:`;
+  return `sha-256=:${b64std(sha2562(enc2.encode(canonicalize(stable))))}:`;
 }
 var MAX_AGE_SECS = 300;
 var MAX_FUTURE_SECS = 30;
@@ -5999,7 +6225,7 @@ function b64stdDecode(s) {
   }
 }
 function contentDigest(body) {
-  return `sha-256=:${b64std(sha2563(body))}:`;
+  return `sha-256=:${b64std(sha2562(body))}:`;
 }
 function coveredComponents(hasBody) {
   return hasBody ? ["@method", "@authority", "@path", "content-digest", PRESENTATION_HEADER] : ["@method", "@authority", "@path", PRESENTATION_HEADER];
@@ -6423,7 +6649,7 @@ function scanForbidden(v) {
     for (const it of v) scanForbidden(it);
   } else if (v !== null && typeof v === "object") {
     for (const [k, child] of Object.entries(v)) {
-      if (FORBIDDEN_KEYS.has(k.toLowerCase())) throw new Reject("schema_violation");
+      if (FORBIDDEN_KEYS.has(k.replace(/[A-Z]/g, (c) => c.toLowerCase()))) throw new Reject("schema_violation");
       scanForbidden(child);
     }
   }
@@ -6442,6 +6668,7 @@ function parseChecked(claims) {
   if (o.vct !== VCT) throw new Reject("schema_violation");
   if (typeof o.sub !== "string" || !parseName(o.sub)) throw new Reject("name_malformed");
   if (typeof o.iss !== "string" || parseDidRegistrar(o.iss) === null) throw new Reject("name_malformed");
+  if (o.sub.split("@")[0].slice("ainra:".length) !== o.iss.slice("did:ainra:".length)) throw new Reject("name_malformed");
   denyUnknown(o.authority, ALLOWED_AUTHORITY);
   reqString(o.authority.class);
   reqString(o.authority.principal_proof);
@@ -6453,7 +6680,13 @@ function parseChecked(claims) {
     if (typeof ke.ed25519 !== "string" || ke.ed25519.length === 0) throw new Reject("schema_violation");
     if (typeof ke.mldsa65 !== "string" || ke.mldsa65.length === 0) throw new Reject("schema_violation");
   }
-  if (typeof o.nbf !== "number" || typeof o.exp !== "number" || o.exp <= o.nbf) throw new Reject("schema_violation");
+  if (!isU64(o.nbf) || !isU64(o.exp) || o.exp <= o.nbf) throw new Reject("schema_violation");
+  if (!["L0", "L1", "L2", "L3", "L4"].includes(o.tier)) throw new Reject("schema_violation");
+  if (!["A1", "A2", "A3", "A4"].includes(o.authority.class)) {
+    throw new Reject("schema_violation");
+  }
+  if (!("cnf" in o)) throw new Reject("schema_violation");
+  if ("transfer_history" in o && !Array.isArray(o.transfer_history)) throw new Reject("schema_violation");
   const capabilities = reqStringArray(o.capabilities);
   const scope_ceiling = reqStringArray(o.scope_ceiling);
   denyUnknown(o.status, ALLOWED_STATUS);
@@ -6473,7 +6706,7 @@ function parseChecked(claims) {
     if (!reqString(hop.from) || !parseName(hop.from)) throw new Reject("name_malformed");
     if (!reqString(hop.to) || !parseName(hop.to)) throw new Reject("name_malformed");
     reqStringArray(hop.granted);
-    if (typeof hop.exp !== "number") throw new Reject("schema_violation");
+    if (!isU64(hop.exp)) throw new Reject("schema_violation");
     if (!hop.sig_ed25519 || !hop.sig_mldsa65 || !hop.sig_child_ed25519 || !hop.sig_child_mldsa65 || !hop.log_leaf)
       throw new Reject("schema_violation");
   }
@@ -6558,7 +6791,7 @@ function instanceSigningBytes(ic) {
   }));
 }
 function instanceCredDigest(ic) {
-  return sha2563(instanceSigningBytes(ic));
+  return sha2562(instanceSigningBytes(ic));
 }
 function popSigningBytes(pop, ic) {
   return new TextEncoder().encode(canonicalize({
@@ -6579,7 +6812,7 @@ function certFingerprintB64(c) {
   const bytes = new TextEncoder().encode(
     canonicalize({ delegate: b64uEncode(c.delegateEd25519), exp: c.exp, nbf: c.nbf, scopes: c.scopes })
   );
-  return b64uEncode(sha2563(bytes));
+  return b64uEncode(sha2562(bytes));
 }
 function strictB64u(s) {
   if (!/^[A-Za-z0-9_-]*$/.test(s)) return null;
@@ -6677,7 +6910,7 @@ function verifyFreshHead(head, rootKey, cert, now, freshness) {
   return freshnessStale(freshness, now, head.ts) ? "stale_status" : null;
 }
 function headHash(uri, bitLen2, statusListB64) {
-  return sha2563(new TextEncoder().encode(canonicalize({ bit_len: bitLen2, status_list: statusListB64, uri })));
+  return sha2562(new TextEncoder().encode(canonicalize({ bit_len: bitLen2, status_list: statusListB64, uri })));
 }
 function verify(pres, anchors) {
   try {
@@ -6712,6 +6945,7 @@ function verifyInner(pres, anchors) {
       const rc = verifyHybrid(pres.chainKeys[i2 + 1], msg, child);
       if (rc) throw new Reject(rc);
     }
+    if (!subset(p.act_chain[0].granted, p.scope_ceiling)) throw new Reject("chain_widening");
     let effCaps = p.act_chain[0].granted;
     let effExp = p.act_chain[0].exp;
     for (let i2 = 1; i2 < p.act_chain.length; i2++) {
@@ -6734,10 +6968,12 @@ function verifyInner(pres, anchors) {
   if (revoked) throw new Reject("revoked");
   if (pres.mandatePath.length > 0 || pres.mandateProofs.length > 0) throw new Reject("schema_violation");
   checkMandatePath(p.mandates, pres.mandateRevocations);
-  if (!verifyCheckpointSig(reg.logRootKey, pres.checkpoint, pres.checkpointSig, pres.now))
-    throw new Reject("checkpoint_invalid");
-  if (pres.checkpointSig.mode === "delegate" && pres.revokedDelegates.has(certFingerprintB64(pres.checkpointSig.cert)))
-    throw new Reject("checkpoint_invalid");
+  if (!pinnedHeadHolds(reg, pres.checkpoint.size, pres.checkpoint.root)) {
+    if (!verifyCheckpointSig(reg.logRootKey, pres.checkpoint, pres.checkpointSig, pres.now))
+      throw new Reject("checkpoint_invalid");
+    if (pres.checkpointSig.mode === "delegate" && pres.revokedDelegates.has(certFingerprintB64(pres.checkpointSig.cert)))
+      throw new Reject("checkpoint_invalid");
+  }
   const expectedLeaf = prelogLeaf(pres.claims);
   const claimedLeaf = dec(p.logLeaf, "not_logged");
   if (claimedLeaf.length !== 32 || !eqBytes(claimedLeaf, expectedLeaf)) throw new Reject("not_logged");
@@ -6757,6 +6993,7 @@ function verifyInner(pres, anchors) {
     if (reg.distrustFromLeaf !== void 0 && hp.leafIndex >= reg.distrustFromLeaf)
       throw new Reject("registrar_distrusted");
   }
+  checkParties(pres, p, reg, registrar);
   if (pres.instance) {
     verifyInstance(pres.instance.ic, pres.instance.pop, p, expectedLeaf, pres.now, pres.audience ?? "");
   }
@@ -6773,6 +7010,43 @@ function verifyInstance(ic, pop, p, passportLeaf, now, expectedAud) {
   if (ic.aud !== expectedAud || pop.aud !== expectedAud) throw new Reject("instance_pop_invalid");
   if (now - pop.ts > POP_MAX_SKEW_SECS || pop.ts - now > POP_MAX_FUTURE_SECS) throw new Reject("instance_pop_invalid");
   if (verifyHybrid(ic.ikey, popSigningBytes(pop, ic), pop.sig)) throw new Reject("instance_pop_invalid");
+}
+function checkParties(pres, p, reg, registrar) {
+  const bound = reg.chainsBoundFromLeaf !== void 0 && pres.leafIndex >= reg.chainsBoundFromLeaf;
+  if (!bound || p.act_chain.length === 0) {
+    if (pres.chainParties.length > 0) throw new Reject("schema_violation");
+    return;
+  }
+  if (pres.chainParties.length !== p.act_chain.length) throw new Reject("schema_violation");
+  const hasKey = (keys, k) => keys.some((e) => {
+    const ed = strictB64u(e.ed25519);
+    const ml = strictB64u(e.mldsa65);
+    return ed !== null && ml !== null && eqBytes(ed, k.ed25519) && eqBytes(ml, k.mldsa65);
+  });
+  for (let i2 = 0; i2 < p.act_chain.length; i2++) {
+    const party = pres.chainParties[i2];
+    let q;
+    try {
+      q = parseChecked(party.claims);
+    } catch {
+      throw new Reject("chain_party_unbound");
+    }
+    if (parseDidRegistrar(q.iss) !== registrar || q.sub !== p.act_chain[i2].from) throw new Reject("chain_party_unbound");
+    if (verifyHybrid(reg.issuerKey, party.claims, party.issuerSig)) throw new Reject("chain_party_unbound");
+    if (pres.now < q.nbf || pres.now >= q.exp) throw new Reject("chain_party_unbound");
+    let leaf;
+    try {
+      leaf = prelogLeaf(party.claims);
+    } catch {
+      throw new Reject("chain_party_unbound");
+    }
+    if (!verifyInclusion(leaf, party.leafIndex, pres.checkpoint.size, party.inclusionProof, pres.checkpoint.root))
+      throw new Reject("chain_party_unbound");
+    if (reg.distrustFromLeaf !== void 0 && party.leafIndex >= reg.distrustFromLeaf)
+      throw new Reject("registrar_distrusted");
+    if (!hasKey(q.keys, pres.chainKeys[i2])) throw new Reject("chain_party_unbound");
+  }
+  if (!hasKey(p.keys, pres.chainKeys[p.act_chain.length])) throw new Reject("chain_party_unbound");
 }
 function prelogLeaf(claims) {
   let body;
@@ -6839,11 +7113,21 @@ function decodeInstance(i2) {
   };
 }
 function decodePresentation(pr, revoked, now, audience) {
+  if (!isU64(pr.leaf_index) || !pr.hop_proofs.every((hp) => isU64(hp.leaf_index))) throw new Reject("schema_violation");
+  const parties = pr.chain_parties ?? [];
+  if (!Array.isArray(parties) || !parties.every((w) => isU64(w.leaf_index))) throw new Reject("schema_violation");
+  if (!isU64(pr.checkpoint?.size) || !isU64(pr.status_issued_at)) throw new Reject("schema_violation");
   return {
     claims: dec(pr.claims),
     issuerSig: { ed25519: dec(pr.issuer_sig.ed25519), mldsa65: dec(pr.issuer_sig.mldsa65) },
     now,
     chainKeys: pr.chain_keys.map((k) => ({ ed25519: dec(k.ed25519), mldsa65: dec(k.mldsa65) })),
+    chainParties: parties.map((w) => ({
+      claims: dec(w.claims),
+      issuerSig: { ed25519: dec(w.issuer_sig.ed25519), mldsa65: dec(w.issuer_sig.mldsa65) },
+      leafIndex: w.leaf_index,
+      inclusionProof: w.inclusion_proof.map((x2) => dec(x2))
+    })),
     hopProofs: pr.hop_proofs.map((hp) => ({ leafIndex: hp.leaf_index, proof: hp.proof.map((s) => dec(s)) })),
     statusBits: unpackStatus(dec(pr.status_list), pr.status_len),
     statusBitLen: pr.status_len,
@@ -6874,8 +7158,14 @@ function runVector(v) {
         // D-044: wire is snake_case, the TS surface is camelCase. Forgetting this mapping is precisely how an
         // implementation silently returns VALID where the reference returns registrar_distrusted — which is what
         // `make diff` caught on the first run of these vectors.
-        distrustFromLeaf: r.distrust_from_leaf ?? void 0
+        distrustFromLeaf: r.distrust_from_leaf ?? void 0,
+        chainsBoundFromLeaf: r.chains_bound_from_leaf ?? void 0
       };
+      if (r.distrust_root !== void 0) {
+        const pin = strictB64u(r.distrust_root);
+        if (pin === null || pin.length !== 32 || r.distrust_from_leaf === void 0) throw new Reject("schema_violation");
+        anchors[id2].distrustRoot = pin;
+      }
     }
     const revoked = new Set(decodeFingerprints(pr.revoked_delegates ?? []) ?? (pr.revoked_delegates ?? []));
     return verify(decodePresentation(pr, revoked, pr.now, pr.audience ?? ""), anchors);
@@ -6926,6 +7216,17 @@ function authenticateCurrency(info, bundle, now, seqSeen, revokedDelegates) {
   if (seen !== void 0 && head.seq < seen) throw new Reject("stale_status");
   seqSeen.set(head.uri, seen === void 0 ? head.seq : Math.max(seen, head.seq));
 }
+function denyMatches(e, sub) {
+  if (!e.includes(":")) return sub.split(":")[1] === e;
+  if (e.includes("@")) return sub === e;
+  return sub.startsWith(e) && sub.slice(e.length).startsWith("@");
+}
+function applyGatePolicy(v, sub, directoryIssuedAt, now, policy) {
+  if (v.verdict !== "valid") return v;
+  if (policy.maxDirectoryAgeS !== void 0 && now > directoryIssuedAt + policy.maxDirectoryAgeS) return invalid("denied_by_policy");
+  if ((policy.deny ?? []).some((e) => denyMatches(e, sub))) return invalid("denied_by_policy");
+  return v;
+}
 var Verifier = class _Verifier {
   anchors;
   revokedDelegates;
@@ -6938,25 +7239,31 @@ var Verifier = class _Verifier {
    *  = this verifier accepts no instance credentials, which is the fail-closed default: a service that has not
    *  said who it is cannot be the intended recipient of anything. */
   audience;
+  /** This gate's own policy (D-100): local deny entries and an optional maximum directory age. Empty by default. */
+  policy;
+  /** The signed directory's `issued_at`, which `policy.maxDirectoryAgeS` is measured from. */
+  directoryIssuedAt;
   /** Per-uri highest fresh-head `seq` this verifier has observed (currency mode). A lower seq is a replay. */
   seqSeen = /* @__PURE__ */ new Map();
-  constructor(acc, freshness, currency, audience) {
+  constructor(acc, freshness, currency, audience, policy = {}, directoryIssuedAt = 0) {
     this.anchors = acc.anchors;
     this.revokedDelegates = acc.revokedDelegates;
     this.epoch = acc.epoch;
     this.freshness = freshness;
     this.currency = currency;
     this.audience = audience;
+    this.policy = policy;
+    this.directoryIssuedAt = directoryIssuedAt;
   }
   /** Verify the dual-root-signed directory and build a Verifier; `null` if the directory is not authentic.
    *  `freshness` sets the verifier's own status-freshness policy (default `"F2"` = 5 min). `currency` (default
    *  `false`) enables the fresh-head + monotonic-seq replay defence (see the class docs). */
-  static fromDirectory(d, rootEd25519, rootSlh, freshness = "F2", currency = false, audience = "") {
+  static fromDirectory(d, rootEd25519, rootSlh, freshness = "F2", currency = false, audience = "", policy = {}) {
     const acc = verifyDirectory(d, rootEd25519, rootSlh);
-    return acc === null ? null : new _Verifier(acc, freshness, currency, audience);
+    return acc === null ? null : new _Verifier(acc, freshness, currency, audience, policy, Number(d.issued_at) || 0);
   }
   /** Convenience: build from a directory + the ceremony's base64url root keys (as published in `roots.json`). */
-  static fromDirectoryB64(d, rootEd25519B64, rootSlhB64, freshness = "F2", currency = false, audience = "") {
+  static fromDirectoryB64(d, rootEd25519B64, rootSlhB64, freshness = "F2", currency = false, audience = "", policy = {}) {
     let ed, slh;
     try {
       ed = dec(rootEd25519B64);
@@ -6964,7 +7271,7 @@ var Verifier = class _Verifier {
     } catch {
       return null;
     }
-    return _Verifier.fromDirectory(d, ed, slh, freshness, currency, audience);
+    return _Verifier.fromDirectory(d, ed, slh, freshness, currency, audience, policy);
   }
   /** Verify one presentation at the verifier's own `now` (unix seconds). The verifier supplies the clock, the
    * directory's revoked-delegate set, its own freshness policy, and an EMPTY mandate-revocation set; and it
@@ -6983,17 +7290,12 @@ var Verifier = class _Verifier {
       const pres = decodePresentation(bundle, this.revokedDelegates, now, this.audience);
       pres.mandateRevocations = /* @__PURE__ */ new Set();
       pres.freshness = this.freshness;
-      return verify(pres, this.anchors);
+      return applyGatePolicy(verify(pres, this.anchors), p.sub, this.directoryIssuedAt, now, this.policy);
     } catch (e) {
       if (e instanceof Reject) return invalid(e.reason);
       return invalid("schema_violation");
     }
   }
-  /** AINRA Link (D-078): who stands behind `presentedKey` — a 32-byte Ed25519 key, or a 33-byte compressed secp256k1
-   *  point (ES256K, D-082) — a key this gate has ALREADY verified the
-   *  request's signature with. Uses the directory's anchors and revoked delegates, this verifier's freshness class,
-   *  and authenticates the status publication before reading a bit. `capability` is what the request exercises.
-   *  A key with no link is the caller's outcome ("not linked") — this checks the link it is given. Never throws. */
   /** Check a registrar's receipt for a gate's logged decision head (D-081) against this verifier's accredited
    *  registrars: the statement names and was signed by `gateKey`, and it is logged under a checkpoint the
    *  registrar's log key signed. Never throws. */
@@ -7005,9 +7307,21 @@ var Verifier = class _Verifier {
       return { verdict: "invalid", reason: "schema_violation" };
     }
   }
-  verifyLink(link, presentedKey, now, capability) {
+  /** AINRA Link (D-078): who stands behind `presentedKey` — a 32-byte Ed25519 key, a 33-byte compressed secp256k1
+   *  point (ES256K, D-082), or a 65-byte uncompressed P-256 point (ES256, D-108) — a key this gate has ALREADY verified
+   *  a signature with. Uses the directory's anchors and revoked delegates, this verifier's freshness class,
+   *  and authenticates the status publication before reading a bit. `capability` is what the request exercises.
+   *  A key with no link is the caller's outcome ("not linked") — this checks the link it is given. Never throws.
+   *
+   *  `issuer` says how the gate used the key (D-110). Leave it out when the key signed the REQUEST. Pass the issuer
+   *  name when the key signed a TOKEN instead: the name written in that token (its `iss`), which the gate has already
+   *  matched to the key from the keys that issuer publishes. A link is consent to one use: an issuer link presented
+   *  for a request, an ordinary link presented for a token, or a token naming another issuer is `sig_invalid`.
+   *  A valid issuer answer says who answers for the ISSUER; it says nothing about the agent the token names. Take
+   *  the key from the issuer, never from a link, and find the link by that key, never by the issuer's name. */
+  verifyLink(link, presentedKey, now, capability, issuer) {
     try {
-      return { verdict: "valid", ...verifyLinkInner(link, this.anchors, this.revokedDelegates, presentedKey, now, this.freshness, capability) };
+      return { verdict: "valid", ...verifyLinkInner(link, this.anchors, this.revokedDelegates, presentedKey, now, this.freshness, capability, issuer) };
     } catch (e) {
       if (e instanceof Reject) return { verdict: "invalid", reason: e.reason };
       return { verdict: "invalid", reason: "schema_violation" };
@@ -7058,6 +7372,11 @@ function runDeltaVector(v) {
   }
   return r === null ? { accept: true } : { accept: false, reason: r };
 }
+function pinnedHeadHolds(reg, size, root) {
+  if (reg.distrustFromLeaf === void 0 || reg.distrustRoot === void 0) return false;
+  if (size === reg.distrustFromLeaf && eqBytes(root, reg.distrustRoot)) return true;
+  throw new Reject("registrar_distrusted");
+}
 function verifyDirectory(d, rootEd25519, rootSlh) {
   const revoked = d.revoked_delegates ?? [];
   let msg;
@@ -7098,6 +7417,15 @@ function verifyDirectory(d, rootEd25519, rootSlh) {
       logRootKey: lr,
       distrustFromLeaf: typeof e.distrust_from_leaf === "number" ? e.distrust_from_leaf : void 0
     };
+    if (e.chains_bound_from_leaf !== void 0) {
+      if (!isU64(e.chains_bound_from_leaf)) return null;
+      info.chainsBoundFromLeaf = e.chains_bound_from_leaf;
+    }
+    if (e.distrust_root !== void 0) {
+      const pr = typeof e.distrust_root === "string" ? strictB64u(e.distrust_root) : null;
+      if (pr === null || pr.length !== 32 || info.distrustFromLeaf === void 0) return null;
+      info.distrustRoot = pr;
+    }
     const sEd = strictB64u(e.status_ed25519 ?? "");
     const sMl = strictB64u(e.status_mldsa65 ?? "");
     if (sEd !== null && sEd.length === 32 && sMl !== null && sMl.length > 0 && e.status_uri.length > 0) {
@@ -7237,8 +7565,11 @@ async function proveInstancePossession(args) {
 }
 var LINK_V = "ainra-link-1";
 var LINK_POP_PURPOSE = "ainra-link-pop-1";
+var ISSUER_LINK_POP_PURPOSE = "ainra-issuer-link-pop-1";
+var ISSUER_NAME = /^[\x21-\x7e]{1,255}$/;
 var ALLOWED_LINK = /* @__PURE__ */ new Set(["v", "registrar", "passport", "subject", "scope", "nbf", "exp", "status", "passport_status", "pop", "log"]);
-var ALLOWED_LINK_SUBJECT = /* @__PURE__ */ new Set(["kind", "alg", "thumbprint"]);
+var REQUIRED_LINK_SUBJECT = /* @__PURE__ */ new Set(["kind", "alg", "thumbprint"]);
+var ALLOWED_LINK_SUBJECT = /* @__PURE__ */ new Set([...REQUIRED_LINK_SUBJECT, "iss"]);
 var ALLOWED_LINK_LOG = /* @__PURE__ */ new Set(["leaf"]);
 function isU64(v) {
   return typeof v === "number" && Number.isSafeInteger(v) && v >= 0;
@@ -7257,11 +7588,12 @@ function parseLinkChecked(raw) {
   const status = o.status;
   const pstatus = o.passport_status;
   const log = o.log;
-  for (const [obj, allowed] of [[subject, ALLOWED_LINK_SUBJECT], [status, ALLOWED_STATUSREF], [pstatus, ALLOWED_STATUSREF], [log, ALLOWED_LINK_LOG]]) {
+  for (const [obj, allowed, required] of [[subject, ALLOWED_LINK_SUBJECT, REQUIRED_LINK_SUBJECT], [status, ALLOWED_STATUSREF, ALLOWED_STATUSREF], [pstatus, ALLOWED_STATUSREF, ALLOWED_STATUSREF], [log, ALLOWED_LINK_LOG, ALLOWED_LINK_LOG]]) {
     if (typeof obj !== "object" || obj === null || Array.isArray(obj)) throw new Reject("schema_violation");
     denyUnknown(obj, allowed);
-    for (const k of allowed) if (!Object.hasOwn(obj, k)) throw new Reject("schema_violation");
+    for (const k of required) if (!Object.hasOwn(obj, k)) throw new Reject("schema_violation");
   }
+  const iss = Object.hasOwn(subject, "iss") ? reqString(subject.iss) : void 0;
   const v = reqString(o.v);
   const registrar = reqString(o.registrar);
   const passport = reqString(o.passport);
@@ -7281,11 +7613,14 @@ function parseLinkChecked(raw) {
     throw new Reject("schema_violation");
   }
   if (!eqBytes(new TextEncoder().encode(again), raw)) throw new Reject("schema_violation");
-  if (v !== LINK_V || kind !== "jwk" || alg !== "Ed25519" && alg !== "ES256K") throw new Reject("schema_violation");
+  const isRsa = alg === "RS256" || alg === "PS256";
+  if (v !== LINK_V || !isRsa && alg !== "Ed25519" && alg !== "ES256K" && alg !== "ES256") throw new Reject("schema_violation");
+  if (!(kind === "jwk" && iss === void 0 || kind === "issuer" && iss !== void 0 && ISSUER_NAME.test(iss))) throw new Reject("schema_violation");
   const tp = strictB64u(thumbprint);
   const pop = strictB64u(popB64);
   const leaf = strictB64u(leafB64);
-  if (tp === null || tp.length !== 32 || pop === null || pop.length !== 64 || leaf === null || leaf.length !== 32)
+  const popOk = pop !== null && (isRsa ? pop.length >= RSA_MIN_BITS / 8 && pop.length <= RSA_MAX_BITS / 8 : pop.length === 64);
+  if (tp === null || tp.length !== 32 || !popOk || leaf === null || leaf.length !== 32)
     throw new Reject("schema_violation");
   if (scope.length > MAX_CAPABILITIES || scope.some((s) => s.length === 0 || new TextEncoder().encode(s).length > 128))
     throw new Reject("schema_violation");
@@ -7298,6 +7633,7 @@ function parseLinkChecked(raw) {
     passport,
     alg,
     thumbprint,
+    iss,
     scope,
     nbf: o.nbf,
     exp: o.exp,
@@ -7311,21 +7647,44 @@ function parseLinkChecked(raw) {
 function jwkThumbprintEs256k(pk) {
   const p = secp256k1Affine(pk);
   if (!p) return null;
-  return b64uEncode(sha2563(new TextEncoder().encode(canonicalize({ crv: "secp256k1", kty: "EC", x: b64uEncode(p.x), y: b64uEncode(p.y) }))));
+  return b64uEncode(sha2562(new TextEncoder().encode(canonicalize({ crv: "secp256k1", kty: "EC", x: b64uEncode(p.x), y: b64uEncode(p.y) }))));
+}
+function jwkThumbprintEs256(pk) {
+  const p = p256Affine(pk);
+  if (!p) return null;
+  return b64uEncode(sha2562(new TextEncoder().encode(canonicalize({ crv: "P-256", kty: "EC", x: b64uEncode(p.x), y: b64uEncode(p.y) }))));
+}
+function presentedKeyAlg(pk) {
+  if (pk.length === 32) return "Ed25519";
+  if (pk.length === 33) return "ES256K";
+  if (pk.length === 65 && p256Affine(pk) !== null) return "ES256";
+  if (pk.length > 65 && rsaSpkiModulus(pk) !== null) return "RSA";
+  return null;
+}
+function algFits(fam, alg) {
+  return fam === "RSA" ? alg === "RS256" || alg === "PS256" : fam === alg;
+}
+function jwkThumbprintRsa(pk) {
+  const n = rsaSpkiModulus(pk);
+  if (!n) return null;
+  return b64uEncode(sha2562(new TextEncoder().encode(canonicalize({ e: b64uEncode(RSA_EXPONENT), kty: "RSA", n: b64uEncode(n) }))));
 }
 function presentedKeyThumbprint(pk) {
   return jwkThumbprintOf(pk);
 }
 function jwkThumbprintOf(pk) {
-  return pk.length === 32 ? jwkThumbprintEd25519(pk) : pk.length === 33 ? jwkThumbprintEs256k(pk) : null;
+  return pk.length === 32 ? jwkThumbprintEd25519(pk) : pk.length === 33 ? jwkThumbprintEs256k(pk) : pk.length === 65 ? jwkThumbprintEs256(pk) : pk.length > 65 ? jwkThumbprintRsa(pk) : null;
 }
 function jwkThumbprintEd25519(pk) {
-  return b64uEncode(sha2563(new TextEncoder().encode(canonicalize({ crv: "Ed25519", kty: "OKP", x: b64uEncode(pk) }))));
+  return b64uEncode(sha2562(new TextEncoder().encode(canonicalize({ crv: "Ed25519", kty: "OKP", x: b64uEncode(pk) }))));
 }
 function linkPopSigningBytes(registrar, passport, thumbprint, nbf) {
   return new TextEncoder().encode(canonicalize({ purpose: LINK_POP_PURPOSE, registrar, passport, thumbprint, nbf }));
 }
-function verifyLinkInner(w, anchors, revokedDelegates, presentedKey, now, freshness, capability) {
+function issuerLinkPopSigningBytes(registrar, passport, thumbprint, iss, nbf) {
+  return new TextEncoder().encode(canonicalize({ purpose: ISSUER_LINK_POP_PURPOSE, registrar, passport, thumbprint, iss, nbf }));
+}
+function verifyLinkInner(w, anchors, revokedDelegates, presentedKey, now, freshness, capability, issuer) {
   const raw = dec(w.claims);
   const c = parseLinkChecked(raw);
   if (!Object.hasOwn(anchors, c.registrar)) throw new Reject("unknown_registrar");
@@ -7351,22 +7710,29 @@ function verifyLinkInner(w, anchors, revokedDelegates, presentedKey, now, freshn
   if (now >= c.exp) throw new Reject("expired");
   const r = verifyHybrid(reg.issuerKey, raw, sig);
   if (r) throw new Reject(r);
-  const presentedAlg = presentedKey.length === 32 ? "Ed25519" : presentedKey.length === 33 ? "ES256K" : null;
-  if (presentedAlg !== c.alg || jwkThumbprintOf(presentedKey) !== c.thumbprint) throw new Reject("sig_invalid");
-  const consent = linkPopSigningBytes(c.registrar, c.passport, c.thumbprint, c.nbf);
-  if (!(presentedAlg === "Ed25519" ? ed25519Verify(presentedKey, consent, c.pop) : es256kVerify(presentedKey, consent, c.pop)))
-    throw new Reject("sig_invalid");
+  const presentedAlg = presentedKeyAlg(presentedKey);
+  if (presentedAlg === null || !algFits(presentedAlg, c.alg) || jwkThumbprintOf(presentedKey) !== c.thumbprint) throw new Reject("sig_invalid");
+  let consent;
+  if (c.iss === void 0 && issuer === void 0) consent = linkPopSigningBytes(c.registrar, c.passport, c.thumbprint, c.nbf);
+  else if (c.iss !== void 0 && issuer !== void 0 && c.iss === issuer) consent = issuerLinkPopSigningBytes(c.registrar, c.passport, c.thumbprint, c.iss, c.nbf);
+  else throw new Reject("sig_invalid");
+  const consented = presentedAlg === "Ed25519" ? ed25519Verify(presentedKey, consent, c.pop) : presentedAlg === "ES256K" ? es256kVerify(presentedKey, consent, c.pop) : presentedAlg === "ES256" ? es256Verify(presentedKey, consent, c.pop) : rsaVerify(rsaSpkiModulus(presentedKey) ?? new Uint8Array(0), c.alg === "PS256", consent, c.pop);
+  if (!consented) throw new Reject("sig_invalid");
   if (capability !== void 0 && c.scope.length > 0 && !c.scope.includes(capability)) throw new Reject("ceiling_exceeded");
   if (freshnessStale(freshness, now, w.status_issued_at)) throw new Reject("stale_status");
   if (statusBit(packed, w.status_len, c.statusIdx)) throw new Reject("revoked");
   if (statusBit(packed, w.status_len, c.passportIdx)) throw new Reject("revoked");
-  if (!verifyCheckpointSig(reg.logRootKey, { origin: w.checkpoint.origin, rootB64: w.checkpoint.root, size: w.checkpoint.size }, cpSig, now))
-    throw new Reject("checkpoint_invalid");
-  if (cpSig.mode === "delegate" && revokedDelegates.has(certFingerprintB64(cpSig.cert))) throw new Reject("checkpoint_invalid");
+  if (!pinnedHeadHolds(reg, w.checkpoint.size, cpRoot)) {
+    if (!verifyCheckpointSig(reg.logRootKey, { origin: w.checkpoint.origin, rootB64: w.checkpoint.root, size: w.checkpoint.size }, cpSig, now))
+      throw new Reject("checkpoint_invalid");
+    if (cpSig.mode === "delegate" && revokedDelegates.has(certFingerprintB64(cpSig.cert))) throw new Reject("checkpoint_invalid");
+  }
   if (!eqBytes(c.leaf, prelogLeaf(raw))) throw new Reject("not_logged");
   if (!verifyInclusion(c.leaf, w.leaf_index, w.checkpoint.size, proof, cpRoot)) throw new Reject("not_logged");
   if (reg.distrustFromLeaf !== void 0 && w.leaf_index >= reg.distrustFromLeaf) throw new Reject("registrar_distrusted");
-  return { registrar: c.registrar, operator: c.passport.split(":")[2], passport: c.passport, scope: c.scope };
+  const who = { registrar: c.registrar, operator: c.passport.split(":")[2], passport: c.passport, scope: c.scope };
+  if (c.iss !== void 0) who.issuer = c.iss;
+  return who;
 }
 function linkFromIndex(index, publication, thumbprint) {
   const e = index.links.find((l) => l.thumbprint === thumbprint);
@@ -7387,7 +7753,8 @@ function linkFromIndex(index, publication, thumbprint) {
   };
 }
 function runGateVector(v) {
-  const gate = Verifier.fromDirectoryB64(v.directory, v.roots.root_ed25519, v.roots.root_slh, v.freshness, false, v.audience);
+  const policy = { deny: v.policy?.deny, maxDirectoryAgeS: v.policy?.max_directory_age_s };
+  const gate = Verifier.fromDirectoryB64(v.directory, v.roots.root_ed25519, v.roots.root_slh, v.freshness, false, v.audience, policy);
   if (!gate) return { verdict: "no_gate" };
   const r = gate.verify(v.bundle, v.now);
   return r.verdict === "valid" ? { verdict: "valid" } : { verdict: "invalid", reason: r.reason };
@@ -7404,8 +7771,9 @@ function runLinkVector(v) {
   const gate = Verifier.fromDirectoryB64(v.directory, v.roots.root_ed25519, v.roots.root_slh, v.freshness);
   if (!gate) return { verdict: "no_gate" };
   const key = strictB64u(v.presented_key);
-  if (key === null || key.length !== 32 && key.length !== 33) return { verdict: "invalid", reason: "schema_violation" };
-  return gate.verifyLink(v.link, key, v.now, v.capability ?? void 0);
+  if (key === null || presentedKeyAlg(key) === null) return { verdict: "invalid", reason: "schema_violation" };
+  if (v.issuer !== void 0 && v.issuer !== null && typeof v.issuer !== "string") return { verdict: "invalid", reason: "schema_violation" };
+  return gate.verifyLink(v.link, key, v.now, v.capability ?? void 0, v.issuer ?? void 0);
 }
 var DECISION_V = "ainra-decision-1";
 var DECISION_FIELDS = /* @__PURE__ */ new Set(["v", "gate", "seq", "at", "kind", "subject", "passport", "operator", "verdict", "reason", "request", "status", "checkpoint", "policy", "prev", "sig"]);
@@ -7420,6 +7788,7 @@ var FROZEN_REASONS = /* @__PURE__ */ new Set([
   "mandate_revoked",
   "chain_widening",
   "chain_expired",
+  "chain_party_unbound",
   "not_logged",
   "checkpoint_invalid",
   "stale_status",
@@ -7430,7 +7799,8 @@ var FROZEN_REASONS = /* @__PURE__ */ new Set([
   "instance_expired",
   "instance_scope_exceeds",
   "instance_sig_invalid",
-  "instance_pop_invalid"
+  "instance_pop_invalid",
+  "denied_by_policy"
 ]);
 var PRESENTATION_REASONS = /* @__PURE__ */ new Set(["presentation_unsigned", "presentation_sig_invalid", "presentation_stale", "presentation_replayed"]);
 function b64Len(s, n) {
@@ -7497,7 +7867,7 @@ function signDecision(r, gatePublic, prevLine, sign) {
     v: DECISION_V,
     gate: jwkThumbprintEd25519(gatePublic),
     seq: prev ? prev.seq + 1 : 0,
-    prev: prev ? b64uEncode(sha2563(new TextEncoder().encode(prevLine))) : ""
+    prev: prev ? b64uEncode(sha2562(new TextEncoder().encode(prevLine))) : ""
   };
   for (const k of Object.keys(rec)) if (rec[k] === void 0) delete rec[k];
   const line = canonicalize({ ...rec, sig: b64uEncode(sign(decisionSigningBytes(rec))) });
@@ -7517,7 +7887,7 @@ function verifyDecisionChain(lines, gateKey, anchor) {
     if (r.seq !== wantSeq) return fail("sequence");
     if (r.prev !== (last ? last.digest : "")) return fail("link");
     if (last && r.at < last.at) return fail("clock");
-    last = { seq: r.seq, at: r.at, digest: b64uEncode(sha2563(new TextEncoder().encode(lines[index]))) };
+    last = { seq: r.seq, at: r.at, digest: b64uEncode(sha2562(new TextEncoder().encode(lines[index]))) };
   }
   return { ok: true, count: lines.length };
 }
@@ -7569,7 +7939,7 @@ function signHeadStatement(lastLine, gatePublic, sign) {
     gate: jwkThumbprintEd25519(gatePublic),
     seq: r.seq,
     at: r.at,
-    head: b64uEncode(sha2563(new TextEncoder().encode(lastLine)))
+    head: b64uEncode(sha2562(new TextEncoder().encode(lastLine)))
   };
   return canonicalize({ ...h, sig: b64uEncode(sign(headSigningBytes(h))) });
 }
@@ -7605,7 +7975,7 @@ function verifyDecisionChainToHead(lines, gateKey, anchor, head) {
   }
   const at = head.seq - first;
   if (at >= lines.length) return { ok: false, index: lines.length, problem: "truncated" };
-  if (b64uEncode(sha2563(new TextEncoder().encode(lines[at]))) !== head.head) return { ok: false, index: at, problem: "forked" };
+  if (b64uEncode(sha2562(new TextEncoder().encode(lines[at]))) !== head.head) return { ok: false, index: at, problem: "forked" };
   return r;
 }
 function runDecisionVector(v) {
@@ -7630,7 +8000,7 @@ function runDecisionVector(v) {
   return head ? verifyDecisionChainToHead(v.lines, key, v.anchor, head) : verifyDecisionChain(v.lines, key, v.anchor);
 }
 function decisionRequestDigest(req) {
-  return b64uEncode(sha2563(new TextEncoder().encode(canonicalize({
+  return b64uEncode(sha2562(new TextEncoder().encode(canonicalize({
     authority: req.authority,
     content_digest: req.contentDigest ?? "",
     method: req.method,
@@ -7647,7 +8017,7 @@ function createDecisionLog(o) {
       return line;
     },
     head() {
-      return last === "" ? "" : b64uEncode(sha2563(new TextEncoder().encode(last)));
+      return last === "" ? "" : b64uEncode(sha2562(new TextEncoder().encode(last)));
     },
     /** The signed head statement for where the log stands now (D-081) — hand it to a registrar's
      *  `POST /decision-head` with the gate's public key. `""` while the log is empty. */
@@ -7694,6 +8064,7 @@ export {
   WIT_HEADER,
   WIT_MAX_SECS,
   WIT_TYP,
+  applyGatePolicy,
   canonicalize,
   conformance_exports as conformance,
   contentDigest,
@@ -7703,14 +8074,18 @@ export {
   decisionRequestDigest,
   decisionSigningBytes,
   decodeInstance,
+  denyMatches,
   headHash,
   headSigningBytes,
   instanceCredDigest,
   instanceSigningBytes,
   isPresentationRef,
+  issuerLinkPopSigningBytes,
   joinPresentation,
   jwkThumbprintEd25519,
+  jwkThumbprintEs256,
   jwkThumbprintEs256k,
+  jwkThumbprintRsa,
   linkFromIndex,
   linkPopSigningBytes,
   mintInstanceCredential,
@@ -7718,6 +8093,7 @@ export {
   numberFromName,
   popSigningBytes,
   presentationRef,
+  presentedKeyAlg,
   presentedKeyThumbprint,
   proveInstancePossession,
   renewalDue,
@@ -7758,6 +8134,8 @@ export {
 @noble/curves/esm/abstract/weierstrass.js:
 @noble/curves/esm/_shortw_utils.js:
 @noble/curves/esm/secp256k1.js:
+@noble/curves/esm/nist.js:
+@noble/curves/esm/p256.js:
   (*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) *)
 
 @noble/post-quantum/esm/utils.js:

@@ -31,9 +31,9 @@ The complete normative specification. Read it or take the canonical file.
 
 Zero-dependency, real signatures, hash-chained log; catches forged tiers and rewritten history live. Download.
 
-### REFERENCE IMPLEMENTATION PUBLIC · TWELVE SIGNED RELEASES
+### REFERENCE IMPLEMENTATION PUBLIC · FOURTEEN SIGNED RELEASES
 
-The full stack — issuance, transparency log, witness quorum, revocation, verifier SDK — is public with twelve signed, board-proven releases — the current one is v0.8.1. A stranger's cold clone passes every gate: the repository.
+The full stack — issuance, transparency log, witness quorum, revocation, verifier SDK — is public with fourteen signed, board-proven releases — the current one is v0.10.0. A stranger's cold clone passes every gate: the repository.
 
 ### GENESIS ROOT MINTED · OPERATOR-RUN
 
@@ -47,9 +47,9 @@ This control has no operators, so the guarantee it provides is not in force toda
 
 The drop-in verifier kit and the self-serve conformance programme are published; third parties verify — and attest — on their own infrastructure. Attestations so far: 0 of the 3 needed. Want a seat? Join the founding table.
 
-### CONFORMANCE 1169/1169 ✓
+### CONFORMANCE 1184/1184 ✓
 
-Three implementations — Rust, TypeScript and Python — agree on all 1169 CC0 conformance vectors, byte-for-byte, on verdict and reason; a fourth, the reference CLI, agrees on canonical encoding. Reproduced with one command (make diff) in the reference repository; the vector corpus is published alongside it.
+Three implementations — Rust, TypeScript and Python — agree on all 1184 CC0 conformance vectors, byte-for-byte, on verdict and reason; a fourth, the reference CLI, agrees on canonical encoding. Reproduced with one command (make diff) in the reference repository; the vector corpus is published alongside it.
 
 ### REVOCATION <60s [MEASURED]
 
@@ -143,7 +143,7 @@ Revenue is capped per-lineage-year fees at cents scale, flat accreditation, and 
 - NOW
 
 ### Prove
-External verifier trials against pre-registered gates; the standard filed in the open with the reference stack as its conformance suite. Three implementations already agree on all 1169 vectors on verdict and reason, and a fourth agrees on canonical encoding; a stranger can clone the repo and every gate passes.
+External verifier trials against pre-registered gates; the standard filed in the open with the reference stack as its conformance suite. Three implementations already agree on all 1184 vectors on verdict and reason, and a fourth agrees on canonical encoding; a stranger can clone the repo and every gate passes.
 
 - NEXT
 

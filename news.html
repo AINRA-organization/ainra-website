@@ -151,9 +151,9 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
       <div class="g-menu__col">
         <p class="g-menu__k">The record, as published</p>
         <dl class="g-menu__kv">
-          <div><dt>Passports in the record</dt><dd data-stamp="issued">8</dd></div>
+          <div><dt>Passports in the record</dt><dd data-stamp="issued">13</dd></div>
           <div><dt>Registrars</dt><dd data-stamp="registrars">2</dd></div>
-          <div><dt>Revoked</dt><dd data-stamp="revoked">2</dd></div>
+          <div><dt>Revoked</dt><dd data-stamp="revoked">4</dd></div>
           <div><dt>Witnesses</dt><dd>0 · <a href="https://github.com/JacobJandon/ainra/blob/main/outreach/WITNESS-CALL.md">recruiting</a></dd></div>
         </dl>
         <p class="g-menu__note">Read from <a href="net/registry.json">net/registry.json</a>.</p>
@@ -230,6 +230,22 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
   <!--news:start-->
   <section class="nw-month" aria-label="November 2026">
     <h2 class="nw-month__h">November 2026</h2>
+    <article class="nw-item nw-item--major" id="n-v0.10.0" data-kind="release" data-major>
+      <p class="nw-when"><time datetime="2026-11-17">17 November 2026</time><span class="nw-kind nw-kind--release">Release</span><span class="nw-flag">Major</span></p>
+      <h3 class="nw-title"><a href="#n-v0.10.0">0.10.0: a delegation chain now names parties that hold passports</a></h3>
+      <p>An agent can act for someone who acts for someone else: an owner delegates to a support desk, the desk to a bot. Each step is signed by both sides. Until now a verifier checked those signatures under keys the presentation itself supplied, so whoever wrote the passport could also write the chain. The first independent review of AINRA found this, and it is fixed in this release.</p>
+      <p>Where a registrar binds its chains, every party in a chain now shows its own passport, and the key that signed each step must be the one in that passport. The registrar holds none of those keys. A chain that does not hold together is refused by name, chain_party_unbound.</p>
+      <p>The test network's <span class="nw">registrar-07</span> now binds its chains, and its support bot is issued again through a bound chain. The earlier one stays valid: it was written into the log before the rule began, and the rule follows the log, not the calendar.</p>
+      <p class="nw-proof"><a href="https://github.com/JacobJandon/ainra/releases/tag/v0.10.0">The signed release</a><a href="https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md">Decision <span class="nw">D-113</span></a><a href="https://github.com/JacobJandon/ainra/blob/main/CHANGELOG.md">Everything in it</a></p>
+    </article>
+    <article class="nw-item nw-item--major" id="n-v0.9.0" data-kind="release" data-major>
+      <p class="nw-when"><time datetime="2026-11-17">17 November 2026</time><span class="nw-kind nw-kind--release">Release</span><span class="nw-flag">Major</span></p>
+      <h3 class="nw-title"><a href="#n-v0.9.0">0.9.0: the keys other systems already issue can be&nbsp;linked</a></h3>
+      <p>Most AI agents already have an identity from somewhere else: a key in a certificate or a platform keystore, or a token from their company's identity system. This release lets AINRA stand beneath those, without reissuing anything. A key on the <span class="nw">P-256</span> curve, the key an identity system signs its tokens with, and since today an RSA key, the kind the large identity providers use, can each be linked: given an accountable owner and a switch anyone can see turned off, checked offline.</p>
+      <p>It also closes a gap in how a registrar is distrusted. When the directory distrusts one, it now records how far that registrar's log had reached at the cutoff, so nothing it logs afterwards can be passed off as older work.</p>
+      <p>All three of our verifiers agree on every one of the 92 link test vectors, and every earlier vector is unchanged. Everything still runs under a test root.</p>
+      <p class="nw-proof"><a href="https://github.com/JacobJandon/ainra/releases/tag/v0.9.0">The signed release</a><a href="https://github.com/JacobJandon/ainra/blob/main/CHANGELOG.md">Everything in it</a></p>
+    </article>
     <article class="nw-item" id="n-issuer-links" data-kind="rules">
       <p class="nw-when"><time datetime="2026-11-16">16 November 2026</time><span class="nw-kind nw-kind--rules">Rules</span></p>
       <h3 class="nw-title"><a href="#n-issuer-links">One link can now answer for every token an identity system issues</a></h3>
