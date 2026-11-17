@@ -212,6 +212,23 @@
         "file": "SECURITY.md",
         "heading": "Post-mortem: the pilot could be stopped by a request it could not read"
       }
+    },
+    {
+      "id": "INC-2026-014",
+      "class": "HIGH",
+      "surface": "@ainra/sdk, @ainra/middleware and @ainra/mcp (through the SDK), @ainra/edge and PyPI ainra: every published version before 0.10.1 and 0.9.1; the core and the edge only inside a free-form object; a registrar's key is needed to make such a passport",
+      "title": "D-118: a passport that repeated a key could be read two ways, and the TypeScript and Python verifiers accepted it",
+      "opened": "2026-11-17",
+      "disclosed": "2026-11-17",
+      "fixed": "2026-11-17",
+      "released": {
+        "version": "0.10.1",
+        "date": "2026-11-17"
+      },
+      "record": {
+        "file": "SECURITY.md",
+        "heading": "Post-mortem: a passport that repeated a key could be read two ways"
+      }
     }
   ],
   "not_incidents": [

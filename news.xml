@@ -8,6 +8,15 @@
   <updated>2026-11-17T12:00:00Z</updated>
   <author><name>AINRA</name></author>
   <entry>
+    <title>0.10.1 and 0.9.1: a passport that said one thing twice is refused</title>
+    <link href="https://ainra.org/news.html#n-v0.10.1"/>
+    <id>https://ainra.org/news.html#n-v0.10.1</id>
+    <updated>2026-11-17T12:00:00Z</updated>
+    <category term="security"/>
+    <category term="major"/>
+    <content type="html">&lt;p&gt;A passport is a signed piece of text, and that text can name the same field twice: a tier of L3, and then a tier of L1. Programs that read such text do not agree on which one counts. Our TypeScript and Python verifiers kept the second; a verifier built another way could keep the first. So one signed passport could mean two things to two verifiers.&lt;/p&gt;&lt;p&gt;Only a registrar could make such a passport, because only its key signs one, and nothing revoked or unlogged could slip through. But the point of a passport is that everyone who checks it sees the same thing. We found this ourselves on 17 November, testing an outside list of attacks against the code.&lt;/p&gt;&lt;p&gt;Every verifier now refuses a passport whose signed text is not written in the one standard way, and a repeated field can never be written that way. Please upgrade every AINRA package to 0.10.1, or to 0.9.1 on the 0.9 line.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/JacobJandon/ainra/blob/main/SECURITY.md&quot;&gt;The post-mortem&lt;/a&gt; · &lt;a href=&quot;https://ainra.org/incidents.json&quot;&gt;Incident INC-2026-014&lt;/a&gt; · &lt;a href=&quot;https://github.com/JacobJandon/ainra/releases/tag/v0.10.1&quot;&gt;The signed release&lt;/a&gt; · &lt;a href=&quot;https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md&quot;&gt;Decision D-118&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>0.10.0: a delegation chain now names parties that hold passports</title>
     <link href="https://ainra.org/news.html#n-v0.10.0"/>
     <id>https://ainra.org/news.html#n-v0.10.0</id>

@@ -9,6 +9,45 @@
   },
   "entries": [
     {
+      "id": "v0.10.1",
+      "date": "2026-11-17",
+      "kind": "security",
+      "major": true,
+      "title": "0.10.1 and 0.9.1: a passport that said one thing twice is refused",
+      "body": [
+        "A passport is a signed piece of text, and that text can name the same field twice: a tier of L3, and then a tier of L1. Programs that read such text do not agree on which one counts. Our TypeScript and Python verifiers kept the second; a verifier built another way could keep the first. So one signed passport could mean two things to two verifiers.",
+        "Only a registrar could make such a passport, because only its key signs one, and nothing revoked or unlogged could slip through. But the point of a passport is that everyone who checks it sees the same thing. We found this ourselves on 17 November, testing an outside list of attacks against the code.",
+        "Every verifier now refuses a passport whose signed text is not written in the one standard way, and a repeated field can never be written that way. Please upgrade every AINRA package to 0.10.1, or to 0.9.1 on the 0.9 line."
+      ],
+      "proof": [
+        {
+          "label": "The post-mortem",
+          "href": "https://github.com/JacobJandon/ainra/blob/main/SECURITY.md"
+        },
+        {
+          "label": "Incident INC-2026-014",
+          "href": "incidents.json"
+        },
+        {
+          "label": "The signed release",
+          "href": "https://github.com/JacobJandon/ainra/releases/tag/v0.10.1"
+        },
+        {
+          "label": "Decision D-118",
+          "href": "https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md"
+        }
+      ],
+      "covers": {
+        "releases": [
+          "0.10.1",
+          "0.9.1"
+        ],
+        "incidents": [
+          "INC-2026-014"
+        ]
+      }
+    },
+    {
       "id": "v0.10.0",
       "date": "2026-11-17",
       "kind": "release",

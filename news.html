@@ -151,9 +151,9 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
       <div class="g-menu__col">
         <p class="g-menu__k">The record, as published</p>
         <dl class="g-menu__kv">
-          <div><dt>Passports in the record</dt><dd data-stamp="issued">13</dd></div>
+          <div><dt>Passports in the record</dt><dd data-stamp="issued">15</dd></div>
           <div><dt>Registrars</dt><dd data-stamp="registrars">2</dd></div>
-          <div><dt>Revoked</dt><dd data-stamp="revoked">4</dd></div>
+          <div><dt>Revoked</dt><dd data-stamp="revoked">6</dd></div>
           <div><dt>Witnesses</dt><dd>0 · <a href="https://github.com/JacobJandon/ainra/blob/main/outreach/WITNESS-CALL.md">recruiting</a></dd></div>
         </dl>
         <p class="g-menu__note">Read from <a href="net/registry.json">net/registry.json</a>.</p>
@@ -230,6 +230,14 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
   <!--news:start-->
   <section class="nw-month" aria-label="November 2026">
     <h2 class="nw-month__h">November 2026</h2>
+    <article class="nw-item nw-item--major" id="n-v0.10.1" data-kind="security" data-major>
+      <p class="nw-when"><time datetime="2026-11-17">17 November 2026</time><span class="nw-kind nw-kind--security">Security</span><span class="nw-flag">Major</span></p>
+      <h3 class="nw-title"><a href="#n-v0.10.1">0.10.1 and 0.9.1: a passport that said one thing twice is refused</a></h3>
+      <p>A passport is a signed piece of text, and that text can name the same field twice: a tier of L3, and then a tier of L1. Programs that read such text do not agree on which one counts. Our TypeScript and Python verifiers kept the second; a verifier built another way could keep the first. So one signed passport could mean two things to two verifiers.</p>
+      <p>Only a registrar could make such a passport, because only its key signs one, and nothing revoked or unlogged could slip through. But the point of a passport is that everyone who checks it sees the same thing. We found this ourselves on 17 November, testing an outside list of attacks against the code.</p>
+      <p>Every verifier now refuses a passport whose signed text is not written in the one standard way, and a repeated field can never be written that way. Please upgrade every AINRA package to 0.10.1, or to 0.9.1 on the 0.9 line.</p>
+      <p class="nw-proof"><a href="https://github.com/JacobJandon/ainra/blob/main/SECURITY.md">The <span class="nw">post-mortem</span></a><a href="incidents.json">Incident <span class="nw">INC-2026-014</span></a><a href="https://github.com/JacobJandon/ainra/releases/tag/v0.10.1">The signed release</a><a href="https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md">Decision <span class="nw">D-118</span></a></p>
+    </article>
     <article class="nw-item nw-item--major" id="n-v0.10.0" data-kind="release" data-major>
       <p class="nw-when"><time datetime="2026-11-17">17 November 2026</time><span class="nw-kind nw-kind--release">Release</span><span class="nw-flag">Major</span></p>
       <h3 class="nw-title"><a href="#n-v0.10.0">0.10.0: a delegation chain now names parties that hold passports</a></h3>

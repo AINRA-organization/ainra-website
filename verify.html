@@ -247,9 +247,9 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
       <div class="g-menu__col">
         <p class="g-menu__k">The record, as published</p>
         <dl class="g-menu__kv">
-          <div><dt>Passports in the record</dt><dd data-stamp="issued">13</dd></div>
+          <div><dt>Passports in the record</dt><dd data-stamp="issued">15</dd></div>
           <div><dt>Registrars</dt><dd data-stamp="registrars">2</dd></div>
-          <div><dt>Revoked</dt><dd data-stamp="revoked">4</dd></div>
+          <div><dt>Revoked</dt><dd data-stamp="revoked">6</dd></div>
           <div><dt>Witnesses</dt><dd>0 · <a href="https://github.com/JacobJandon/ainra/blob/main/outreach/WITNESS-CALL.md">recruiting</a></dd></div>
         </dl>
         <p class="g-menu__note">Read from <a href="net/registry.json">net/registry.json</a>.</p>
@@ -323,7 +323,7 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
       <div class="sec-head__row"><span class="earmark"><b>/01</b> · Try it — 20 seconds, in this tab</span></div>
       <div class="split">
         <div class="split__l"><h2>Verify an agent.<br><span class="soft">Then try to forge&nbsp;one.</span></h2>
-          <p class="src v-rec"><span class="glyph glyph--sm" data-glyph="glider"></span> THE PICKER BELOW HOLDS THE PUBLISHED RECORD · <b data-stamp="issued">13</b> PASSPORTS · <b data-stamp="revoked">4</b> REVOKED · <b data-stamp="registrars">2</b> REGISTRARS · source: <a href="net/registry.json">net/registry.json</a></p></div>
+          <p class="src v-rec"><span class="glyph glyph--sm" data-glyph="glider"></span> THE PICKER BELOW HOLDS THE PUBLISHED RECORD · <b data-stamp="issued">15</b> PASSPORTS · <b data-stamp="revoked">6</b> REVOKED · <b data-stamp="registrars">2</b> REGISTRARS · source: <a href="net/registry.json">net/registry.json</a></p></div>
         <p class="lede split__r">The actual AINRA verifier — the same code that passes every conformance vector — runs in your browser. It checks passports and, when one is present, the <span class="nw">short-lived</span> credential a <b>running copy</b> carries (<a href="docs.html#integrate-instance">the instance path</a>). Pick a real passport, then tamper with it and watch it fail closed with a named reason. Nothing is uploaded; the root is never contacted.</p>
       </div>
     </div>
@@ -645,7 +645,7 @@ $ ainra verify ./reg ainra:registrar-07:acme:invoicing@1.0.0
 <script type="module">
 // try-it-live. The engine is ainra-core itself — the Rust verify path compiled to WebAssembly (L5) — so "the same
 // code that passes every conformance vector" is literal here rather than a family resemblance. A harness runs the
-// whole corpus through this exact artifact in a headless browser and requires 1184/1184 agreement with the core.
+// whole corpus through this exact artifact in a headless browser and requires 1187/1187 agreement with the core.
 // If WebAssembly cannot load, the page falls back to the JavaScript mirror and SAYS SO in the provenance line;
 // it never quietly answers with a different implementation than the one it claims.
 let ENGINE = null;
@@ -704,7 +704,7 @@ async function loadEngine(){
   try{
     const s = await import("./vendor/ainra-sdk.js");
     return { kind:"js", label:"@ainra/sdk · JavaScript mirror",
-      note:"WebAssembly did not load here, so this ran the independent JavaScript implementation instead. The differential holds both to the same answers on all 1184 vectors — but the Rust core did not run in this tab, and we would rather say that than let you assume it did.",
+      note:"WebAssembly did not load here, so this ran the independent JavaScript implementation instead. The differential holds both to the same answers on all 1187 vectors — but the Rust core did not run in this tab, and we would rather say that than let you assume it did.",
       // The audience is written onto the presentation because `conformance.runVector` reads it from there and nowhere else.
       // Both engines therefore verify for the SAME audience — this page used to hand the WASM engine nothing and
       // the JS engine whatever the pasted bundle claimed, so the two disagreed the moment an instance credential
