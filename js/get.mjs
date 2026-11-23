@@ -7,6 +7,9 @@ import {
 } from "../vendor/ainra-sdk.js";
 const { runVector } = conformance;
 import { fetchT, why } from "./net.mjs";
+// The registrar's whole accreditation, as the directory states it: both keys, and the distrust cutoff and the leaf
+// from which delegation chains are bound (D-113) when present. Without the last, a bound chain is not checked.
+const anchorOf = (a) => ({ issuer_key: a.issuer_key, log_root_key: a.log_root_key, ...(a.distrust_from_leaf != null ? { distrust_from_leaf: a.distrust_from_leaf } : {}), ...(a.distrust_root ? { distrust_root: a.distrust_root } : {}), ...(a.chains_bound_from_leaf != null ? { chains_bound_from_leaf: a.chains_bound_from_leaf } : {}) });
 
 const qs = new URLSearchParams(location.search);
 const meta = (n) => document.querySelector(`meta[name="${n}"]`)?.content?.trim();
@@ -15,7 +18,15 @@ const REG = (qs.get("reg") || meta("ainra-registrar") || (onLocal ? "http://127.
 const REGID = qs.get("regid") || "registrar-07";
 const CONTRACT = (qs.get("net") || meta("ainra-contract") || (onLocal ? "http://127.0.0.1:8091" : "")).replace(/\/$/, "");
 const EXPLORER = (qs.get("scan") || (onLocal ? "http://127.0.0.1:8090" : "")).replace(/\/$/, "");
-const NOW = 1776729600;
+// The clock is the network's own, stated in its record (index.json): `"clock": "wall"` is a network that keeps real
+// time; no such field is the pinned one. Pinned: every request names the fixed instant below and every verdict is dated
+// by it, as this page always did. Real time: no instant is named (the registrar answers and signs at its own clock, and
+// refuses a write dated April 2026), and a verdict is dated by the bundle it is about.
+const PINNED_NOW = 1776729600; // the pinned network's verification time (nbf + 10d)
+let WALL = false;              // set once, at boot, from the record
+const nowQ = (lead) => (WALL ? "" : `${lead}now=${PINNED_NOW}`);
+const stamped = (body) => (WALL ? body : { ...body, now: PINNED_NOW });
+const timeOf = (signedAt) => (WALL ? (Number.isInteger(signedAt) ? signedAt : Math.floor(Date.now() / 1000)) : PINNED_NOW);
 
 const $ = (s) => document.querySelector(s);
 // §16 — report failure inline, in the page's own voice, instead of a blocking OS dialog
@@ -55,9 +66,9 @@ async function boot() {
   try { health = await (await fetchT(REG + "/health", { cache: "no-store" })).json(); }
   catch (e) { return unavailable(`Registrar unavailable — ${why(e, `<code>${REG}</code>`)}. Run <code>make stage-all</code>, or check the URL you passed to <code>?reg=</code>.`); }
   if (!health?.ok) return unavailable("A registrar answered but isn't ready.");
-  try { const a = await (await fetchT(REG + "/accreditation")).json(); anchors = { [REGID]: { issuer_key: a.issuer_key, log_root_key: a.log_root_key } }; } catch (e) { return unavailable(`Couldn't read the registrar's accreditation — ${why(e, `<code>${REG}</code>`)}.`); }
+  try { const a = await (await fetchT(REG + "/accreditation")).json(); anchors = { [REGID]: anchorOf(a) }; } catch (e) { return unavailable(`Couldn't read the registrar's accreditation — ${why(e, `<code>${REG}</code>`)}.`); }
   let netRoot = health.root || "test-root";
-  if (CONTRACT) { try { netRoot = (await (await fetchT(CONTRACT + "/index.json", { cache: "no-store" })).json()).root || netRoot; } catch {} }
+  if (CONTRACT) { try { const ix = await (await fetchT(CONTRACT + "/index.json", { cache: "no-store" })).json(); netRoot = ix.root || netRoot; WALL = ix.clock === "wall"; } catch {} }
   $("#g-badge").textContent = (health.network || "staging").toUpperCase() + " · " + netRoot.toUpperCase();
   $("#g-op").addEventListener("input", preview); $("#g-lin").addEventListener("input", preview); preview();
   $("#g-mint").addEventListener("click", mint);
@@ -102,9 +113,9 @@ async function verify() {
   step(3);
   const v = $("#g-verdict"); v.textContent = "…"; v.className = "g-verdict pend";
   try {
-    const pres = await (await fetchT(`${REG}/present?sub=${encodeURIComponent(rec.sub)}&now=${NOW}`)).json();
+    const pres = await (await fetchT(`${REG}/present?sub=${encodeURIComponent(rec.sub)}${nowQ("&")}`)).json();
     const r = runVector({ name: rec.sub, expect: {}, anchors, presentation: pres });
-    const ev = serializeVerdictEvent(verdictEvent(pres, r, NOW));
+    const ev = serializeVerdictEvent(verdictEvent(pres, r, timeOf(pres.now)));
     const ok = r.verdict === "valid";
     v.textContent = ok ? "VALID" : "INVALID · " + (r.reason || ""); v.className = "g-verdict " + (ok ? "ok" : "no");
     $("#g-event").textContent = ev;
@@ -117,7 +128,7 @@ async function download() {
 }
 async function _download() {
   try {
-    const pres = await (await fetchT(`${REG}/present?sub=${encodeURIComponent(rec.sub)}&now=${NOW}`)).json();
+    const pres = await (await fetchT(`${REG}/present?sub=${encodeURIComponent(rec.sub)}${nowQ("&")}`)).json();
     const bundle = { name: rec.sub, anchors, presentation: pres, note: "AINRA passport bundle (STAGING · TEST-ROOT specimen). Replay it with runVector from @ainra/sdk/conformance." };
     const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = rec.sub.replace(/[:@]/g, "_") + ".passport.json"; a.click();
@@ -131,7 +142,7 @@ async function revoke() {
 async function _revoke() {
   if (!confirm("Revoke this specimen? It will fail closed on re-verify — that's the point.")) return;
   try {
-    const rv = await (await fetchT(REG + "/demo/revoke", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sub: rec.sub, now: NOW }) })).json();
+    const rv = await (await fetchT(REG + "/demo/revoke", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(stamped({ sub: rec.sub })) })).json();
     if (rv.revoked !== rec.sub) throw new Error(rv.error || "revoke failed");
     await verify(); // re-verify → INVALID·revoked
   } catch (e) { fail("Revoke failed: " + e.message); }
@@ -162,13 +173,13 @@ async function checkLink() {
   const v = $("#g-lverdict"), e = $("#g-levent");
   v.textContent = "…"; v.className = "g-verdict pend";
   const [index, publication, verifier] = await Promise.all([
-    fetchT(`${REG}/links?now=${NOW}`, { cache: "no-store" }).then((r) => r.json()),
-    fetchT(`${REG}/status-list?now=${NOW}`, { cache: "no-store" }).then((r) => r.json()),
+    fetchT(`${REG}/links${nowQ("?")}`, { cache: "no-store" }).then((r) => r.json()),
+    fetchT(`${REG}/status-list${nowQ("?")}`, { cache: "no-store" }).then((r) => r.json()),
     linkVerifier(),
   ]);
   const link = linkFromIndex(index, publication, linked.tp);
   if (!link) { v.textContent = "NOT LINKED"; v.className = "g-verdict no"; e.textContent = "the key is not in the registrar's link index"; return; }
-  const r = verifier.verifyLink(link, linked.pub, NOW);
+  const r = verifier.verifyLink(link, linked.pub, timeOf(publication.issued_at));
   const ok = r.verdict === "valid";
   v.textContent = ok ? "VALID" : "INVALID · " + (r.reason || ""); v.className = "g-verdict " + (ok ? "ok" : "no");
   e.textContent = JSON.stringify(ok ? { status: "valid", key: linked.tp, operator: r.operator, passport: r.passport } : { status: "invalid", reason: r.reason, key: linked.tp }, null, 2);
@@ -196,7 +207,7 @@ async function revokeLink() {
   if (!linked) return;
   try {
     const rv = await (await fetchT(REG + "/demo/link/revoke", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ thumbprint: linked.tp, kind: "link", now: NOW }) })).json();
+      body: JSON.stringify(stamped({ thumbprint: linked.tp, kind: "link" })) })).json();
     if (rv.kind !== "link") throw new Error(rv.error || "revoke failed");
     $("#g-lrevoke").hidden = true;
     await checkLink(); // → INVALID · revoked: the same key, the same index, one status bit

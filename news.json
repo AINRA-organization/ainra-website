@@ -9,6 +9,28 @@
   },
   "entries": [
     {
+      "id": "site-checks-bound-chains",
+      "date": "2026-11-23",
+      "kind": "security",
+      "major": false,
+      "title": "The site's checkers now check a bound delegation chain, and no longer refuse one",
+      "body": [
+        "Since 0.10.0 a registrar can bind its delegation chains, so that every party in a chain shows its own passport. Seven places on this site built a registrar's anchor from its two keys alone and left out the line that says where binding starts. Pages that build their own check still showed the right verdict, but never checked the parties. The two pages fed by a registrar's live answer refused a valid bound passport as malformed.",
+        "Every checker on the site now passes the registrar's whole accreditation. All fifteen passports of the test network give their published verdicts, and a chain with one party out of place is refused by name. A new site check refuses an anchor written by hand. The verifier libraries were never affected; this was the site's own code."
+      ],
+      "proof": [
+        {
+          "label": "The change",
+          "href": "https://github.com/JacobJandon/ainra/blob/main/CHANGELOG.md"
+        },
+        {
+          "label": "Decision D-113",
+          "href": "https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md"
+        }
+      ],
+      "covers": {}
+    },
+    {
       "id": "v0.10.1",
       "date": "2026-11-17",
       "kind": "security",

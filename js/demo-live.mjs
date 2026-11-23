@@ -6,6 +6,9 @@
 import { conformance, verdictEvent, serializeVerdictEvent } from "../vendor/ainra-sdk.js";
 const { runVector } = conformance;
 import { fetchT, why } from "./net.mjs";
+// The registrar's whole accreditation, as the directory states it: both keys, and the distrust cutoff and the leaf
+// from which delegation chains are bound (D-113) when present. Without the last, a bound chain is not checked.
+const anchorOf = (a) => ({ issuer_key: a.issuer_key, log_root_key: a.log_root_key, ...(a.distrust_from_leaf != null ? { distrust_from_leaf: a.distrust_from_leaf } : {}), ...(a.distrust_root ? { distrust_root: a.distrust_root } : {}), ...(a.chains_bound_from_leaf != null ? { chains_bound_from_leaf: a.chains_bound_from_leaf } : {}) });
 
 const qs = new URLSearchParams(location.search);
 const meta = (n) => document.querySelector(`meta[name="${n}"]`)?.content?.trim();
@@ -14,7 +17,15 @@ const REG = (qs.get("reg") || meta("ainra-registrar") || (onLocal ? "http://127.
 const REGID = qs.get("regid") || "registrar-07";
 const CONTRACT = (qs.get("net") || meta("ainra-contract") || (onLocal ? "http://127.0.0.1:8091" : "")).replace(/\/$/, "");
 const EXPLORER = (qs.get("scan") || (onLocal ? "http://127.0.0.1:8090" : "")).replace(/\/$/, "");
-const NOW = 1776729600; // staging's default verification time (nbf + 10d)
+// The clock is the network's own, stated in its record (index.json): `"clock": "wall"` is a network that keeps real
+// time; no such field is the pinned one. Pinned: every request names the fixed instant below and every verdict is dated
+// by it, as this page always did. Real time: no instant is named (the registrar answers and signs at its own clock, and
+// refuses a write dated April 2026), and a verdict is dated by the bundle it is about.
+const PINNED_NOW = 1776729600; // the pinned network's verification time (nbf + 10d)
+let WALL = false;              // set once, at boot, from the record
+const nowQ = (lead) => (WALL ? "" : `${lead}now=${PINNED_NOW}`);
+const stamped = (body) => (WALL ? body : { ...body, now: PINNED_NOW });
+const timeOf = (signedAt) => (WALL ? (Number.isInteger(signedAt) ? signedAt : Math.floor(Date.now() / 1000)) : PINNED_NOW);
 
 const $ = (s) => document.querySelector(s);
 let sub = null, anchors = null;
@@ -43,10 +54,10 @@ async function boot() {
   if (!health || !health.ok) return unavailable("A registrar answered but isn't ready.");
   try {
     const acc = await (await fetchT(REG + "/accreditation")).json();
-    anchors = { [REGID]: { issuer_key: acc.issuer_key, log_root_key: acc.log_root_key } };
+    anchors = { [REGID]: anchorOf(acc) };   // the registrar's presentation carries chain parties: the anchors must ask for them
   } catch { return unavailable("Couldn't read the registrar's accreditation."); }
   let netRoot = health.root || "test-root";
-  if (CONTRACT) { try { netRoot = (await (await fetchT(CONTRACT + "/index.json", { cache: "no-store" })).json()).root || netRoot; } catch {} }
+  if (CONTRACT) { try { const ix = await (await fetchT(CONTRACT + "/index.json", { cache: "no-store" })).json(); netRoot = ix.root || netRoot; WALL = ix.clock === "wall"; } catch {} }
   const badge = $("#ll-badge"); if (badge) badge.textContent = (health.network || "staging").toUpperCase() + " · " + netRoot.toUpperCase();
   $("#ll-issue").addEventListener("click", doIssue);
   $("#ll-verify").addEventListener("click", () => doVerify(false));
@@ -74,9 +85,9 @@ async function doIssue() {
 async function doVerify(after) {
   const i = after ? 5 : 3; setStep(i, "run");
   try {
-    const pres = await (await fetchT(`${REG}/present?sub=${encodeURIComponent(sub)}&now=${NOW}`)).json();
+    const pres = await (await fetchT(`${REG}/present?sub=${encodeURIComponent(sub)}${nowQ("&")}`)).json();
     const v = runVector({ name: sub, expect: {}, anchors, presentation: pres });
-    const ev = serializeVerdictEvent(verdictEvent(pres, v, NOW));
+    const ev = serializeVerdictEvent(verdictEvent(pres, v, timeOf(pres.now)));
     const ok = v.verdict === "valid";
     log(`${i} · verdict-event ${ev}`, ok ? "ok" : "no");
     if (!after) {
@@ -93,7 +104,7 @@ async function doVerify(after) {
 async function doRevoke() {
   enable("#ll-revoke", false); setStep(4, "run");
   try {
-    const rv = await (await fetchT(REG + "/demo/revoke", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sub, now: NOW }) })).json();
+    const rv = await (await fetchT(REG + "/demo/revoke", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(stamped({ sub })) })).json();
     if (rv.revoked !== sub) throw new Error(rv.error || "revoke failed");
     setStep(4, "ok"); log(`4 · revoked ${sub}`, "ok");
     enable("#ll-reverify", true);

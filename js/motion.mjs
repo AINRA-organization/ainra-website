@@ -112,3 +112,13 @@ function dbgDraw() {
   dbg.textContent = `frames ${s.frames}  avg ${s.avg_ms} ms  p95 ${s.p95_ms} ms\n` + Object.entries(s.elements).map(([k, v]) => `${k.padEnd(14)} ${v.mean_ms} ms × ${v.steps}`).join("\n");
 }
 if (dbg) { dbg.className = "motion-debug"; document.addEventListener("DOMContentLoaded", () => document.body.appendChild(dbg)); }
+
+// The press shows on the press (feedback on pointer-down; "always include a press state for a custom button"). On touch
+// the browser's :active can arrive late or not at all; this marks the control the moment the finger lands, and the
+// mark goes the moment it lifts or the gesture becomes a scroll. The look of the press lives in living.css.
+document.addEventListener("pointerdown", (e) => {
+  const el = e.target.closest?.("a, button, [role=tab], summary");
+  if (el && !el.disabled && el.getAttribute("aria-disabled") !== "true") el.classList.add("is-down");
+}, { passive: true });
+const lift = () => { for (const el of document.querySelectorAll(".is-down")) el.classList.remove("is-down"); };
+for (const t of ["pointerup", "pointercancel", "dragstart", "blur"]) addEventListener(t, lift, { passive: true });

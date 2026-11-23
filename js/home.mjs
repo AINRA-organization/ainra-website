@@ -5,6 +5,9 @@
 import { register, motionOn } from "./motion.mjs";
 import { loadRecord } from "./record.mjs";
 import { chainState, treeSVG, treeCaption } from "./record-view.mjs";
+// The registrar's whole accreditation, as the directory states it: both keys, and the distrust cutoff and the leaf
+// from which delegation chains are bound (D-113) when present. Without the last, a bound chain is not checked.
+const anchorOf = (a) => ({ issuer_key: a.issuer_key, log_root_key: a.log_root_key, ...(a.distrust_from_leaf != null ? { distrust_from_leaf: a.distrust_from_leaf } : {}), ...(a.distrust_root ? { distrust_root: a.distrust_root } : {}), ...(a.chains_bound_from_leaf != null ? { chains_bound_from_leaf: a.chains_bound_from_leaf } : {}) });
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -203,11 +206,11 @@ function statusGrid(m, net) {
     let ok = true; const rev = [];
     for (const e of Rr.records) {
       const r = e.record;
-      const v = (sdk.conformance?.runVector ?? sdk.runVector)({ name: r.sub, expect: {}, anchors: { [Rr.registrar]: { issuer_key: Rr.accreditation.issuer_key, log_root_key: Rr.accreditation.log_root_key } },
+      const v = (sdk.conformance?.runVector ?? sdk.runVector)({ name: r.sub, expect: {}, anchors: { [Rr.registrar]: anchorOf(Rr.accreditation) },
         presentation: { claims: enc(r.claims), issuer_sig: { ed25519: r.issuer_sig_ed25519, mldsa65: r.issuer_sig_mldsa65 }, now: NOW, chain_keys: r.chain_keys, hop_proofs: r.hop_proofs,
           status_list: Rr.status_list.status_list_b64, status_len: Rr.status_list.bit_len, status_issued_at: Rr.status_list.issued_at, freshness: "F3",
           checkpoint: { origin: r.log_origin, size: r.checkpoint_size, root: r.checkpoint_root }, checkpoint_sig: r.checkpoint_sig, leaf_index: r.leaf_index,
-          inclusion_proof: r.inclusion_proof, mandate_revocations: [], revoked_delegates: [] } });
+          inclusion_proof: r.inclusion_proof, mandate_revocations: [], revoked_delegates: [], ...(r.chain_parties?.length ? { chain_parties: r.chain_parties } : {}) } });
       if ((v.verdict === "valid") === !!r.revoked) ok = false;      // the SDK must refuse exactly the revoked records
       if (bits[r.status_idx] !== (r.revoked ? 1 : 0)) ok = false;    // and each record's bit must say the same
       if (r.revoked) rev.push(r.status_idx);

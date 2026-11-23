@@ -5,8 +5,16 @@
   <link href="https://ainra.org/news.xml" rel="self"/>
   <link href="https://ainra.org/news.html"/>
   <id>https://ainra.org/news.html</id>
-  <updated>2026-11-17T12:00:00Z</updated>
+  <updated>2026-11-23T12:00:00Z</updated>
   <author><name>AINRA</name></author>
+  <entry>
+    <title>The site's checkers now check a bound delegation chain, and no longer refuse one</title>
+    <link href="https://ainra.org/news.html#n-site-checks-bound-chains"/>
+    <id>https://ainra.org/news.html#n-site-checks-bound-chains</id>
+    <updated>2026-11-23T12:00:00Z</updated>
+    <category term="security"/>
+    <content type="html">&lt;p&gt;Since 0.10.0 a registrar can bind its delegation chains, so that every party in a chain shows its own passport. Seven places on this site built a registrar's anchor from its two keys alone and left out the line that says where binding starts. Pages that build their own check still showed the right verdict, but never checked the parties. The two pages fed by a registrar's live answer refused a valid bound passport as malformed.&lt;/p&gt;&lt;p&gt;Every checker on the site now passes the registrar's whole accreditation. All fifteen passports of the test network give their published verdicts, and a chain with one party out of place is refused by name. A new site check refuses an anchor written by hand. The verifier libraries were never affected; this was the site's own code.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/JacobJandon/ainra/blob/main/CHANGELOG.md&quot;&gt;The change&lt;/a&gt; · &lt;a href=&quot;https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md&quot;&gt;Decision D-113&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>0.10.1 and 0.9.1: a passport that said one thing twice is refused</title>
     <link href="https://ainra.org/news.html#n-v0.10.1"/>

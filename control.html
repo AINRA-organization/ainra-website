@@ -50,7 +50,7 @@ button{font-family:var(--body);cursor:pointer;border:none;background:none;color:
 .skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--ink);color:#fff;padding:10px 16px;border-radius:0 0 8px 0;font-weight:600}
 .skip:focus{left:0}
 .announce{background:var(--ink);color:#E2E8F0;font-size:12.5px;text-align:center;padding:9px 16px}
-.announce a{color:var(--green-br);font-weight:600}
+body .announce a{color:#F5F6F3;font-weight:600;text-decoration:underline;text-underline-offset:3px} /* light on the dark bar; green means valid only */
 nav{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px solid var(--line)}
 .nav-in{display:flex;align-items:center;gap:14px;height:68px}
 .brand{display:flex;align-items:center;gap:11px}
@@ -102,7 +102,7 @@ nav{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1px s
 .stepper .g-dot[data-on="1"]{color:var(--green)}.stepper .g-dot[data-on="1"]:before{background:var(--green)}
 .flow{max-width:720px;margin:26px auto 0}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 24px 56px -34px rgba(11,18,32,.24)}
-.panel .tag{float:right;font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:3px 8px}
+.panel .tag{float:right;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:3px 8px}
 .panel h2{font-size:20px;margin-bottom:4px}.panel .lede{color:var(--muted);font-size:14px;margin-bottom:18px}
 label.fld{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin:14px 0 5px}
 input.txt{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--ink);font:14px var(--mono)}
@@ -196,6 +196,8 @@ footer{padding:52px 0 40px;border-top:1px solid var(--line);margin-top:92px}
 }
 nav .nav-links a[aria-current="page"],nav .ndocs[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
 @media(max-width:480px){.announce{font-size:11px;padding:8px 12px}}
+body .announce a{display:inline-block;padding:6px 0;margin:-6px 0}
+@media(max-width:700px){.panel .tag{font-size:11px}.actions button{min-height:44px}body .announce a{padding:15px 0;margin:-15px 0}}
 @media(max-width:1023px){nav .mean{display:none}}
 
 /* landscape page */
@@ -457,7 +459,7 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
     <span class="live">ROOT STATUS: <span class="nw">PRE-CEREMONY</span></span>
     <span>LOGS SEALED: 0 · WITNESSES: 0 — <span class="nw">SPLIT-VIEW</span> GUARANTEE NOT IN FORCE · <a href="https://github.com/JacobJandon/ainra/blob/main/outreach/WITNESS-CALL.md">RECRUITING</a> · SPEC PUBLIC · CLI v0.3.5</span>
     <span>ISSUES NOTHING · SCORES NOTHING · SEES NO PII · FAVORS NO ONE</span>
-    <span class="rclock" data-record-clock><span class="rclock__l"><span class="rclock__k">PUBLISHED RECORD</span> <span data-stamp="published-iso"><span class="nw">2026-11-04T18:19:51Z</span></span></span><span class="rclock__s"><span class="rclock__k">RECORD</span> <span data-stamp="published-date"><span class="nw">2026-11-04</span></span></span><span data-rc-more hidden> · <span class="rclock__l"><span class="rclock__k">AGE</span> <span data-rc-age></span></span><span class="rclock__s" data-rc-days></span> · <b data-rc-state></b></span></span>
+    <span class="rclock" data-record-clock><span class="rclock__l"><span class="rclock__k">PUBLISHED RECORD</span> <span data-stamp="published-iso"><span class="nw">2026-11-17T22:15:13Z</span></span></span><span class="rclock__s"><span class="rclock__k">RECORD</span> <span data-stamp="published-date"><span class="nw">2026-11-17</span></span></span><span data-rc-more hidden> · <span class="rclock__l"><span class="rclock__k">AGE</span> <span data-rc-age></span></span><span class="rclock__s" data-rc-days></span> · <b data-rc-state></b></span></span>
     <span class="openbadge"><svg viewBox="0 0 160 160" aria-hidden="true" style="color:#8A93A0"><use href="#ainra-crest"/></svg>An open standard · held by no one</span>
   </div>
 </footer>
@@ -519,7 +521,10 @@ async function check() {
   if (fixed) row(R, "warn", "This page is reading at a fixed clock (<code>?now=</code>), not today's: a drill, or a link that wants you to see an old state as current.");
   const age = Math.max(0, nowS - (dir.issued_at || 0)), CADENCE = 92 * 86400;   // the published quarterly cadence (D-094)
   row(R, "info", `Epoch <b>${esc(dir.epoch)}</b> · ${dir.entries?.length ?? 0} registrar(s) · ${(dir.revoked_delegates || []).length} revoked delegate(s) · digest <code>${digest.slice(0, 16)}</code>`);
-  if (age > CADENCE && net !== "PRODUCTION") row(R, "warn", `Issued ${Math.floor(age / 86400)} day(s) ago — older than the published quarterly cadence (92 days). This is a TEST-ROOT copy, held still on purpose; the cadence binds the production root. <code>ainra ctl status</code> still alarms on it.`);
+  // A test record is excused from the cadence only when it says it is held still: a pinned record carries no "clock"
+  // field (tools/net-clock.mjs). One that states "clock": "wall" keeps real time and is held to the cadence as production is.
+  const heldStill = net !== "PRODUCTION" && index.clock !== "wall";
+  if (age > CADENCE && heldStill) row(R, "warn", `Issued ${Math.floor(age / 86400)} day(s) ago — older than the published quarterly cadence (92 days). This is a TEST-ROOT copy, held still on purpose; the cadence binds the production root. <code>ainra ctl status</code> still alarms on it.`);
   else if (age > CADENCE) { A(`stale directory: issued ${Math.floor(age / 86400)} day(s) ago, the published quarterly cadence allows 92 — a host may be withholding a newer epoch`); row(R, "alarm", `Issued ${Math.floor(age / 86400)} day(s) ago — older than the published quarterly cadence (92 days). A host may be withholding a newer epoch.`); }
   else row(R, "ok", `Issued ${Math.floor(age / 86400)} day(s) ago, within the published quarterly cadence (92 days).`);
 
@@ -603,6 +608,7 @@ async function check() {
   const key = `ainra-ctl:${NET}#${fp}`;
   let seen = null; try { seen = JSON.parse(localStorage.getItem(key) || "null"); } catch { seen = null; }
   if (seen) {
+    if (seen.clock === "wall" && index.clock !== "wall") A(`this record stated that it keeps real time when this browser last looked, and it no longer says so`);
     if (dir.epoch < seen.epoch) A(`rollback: epoch ${dir.epoch} is served, but this browser saw epoch ${seen.epoch}`);
     else if (dir.epoch === seen.epoch && digest !== seen.digest) A(`equivocation: a second, different directory at epoch ${dir.epoch}`);
     for (const [n, d] of history) if (seen.epochs?.[n] && seen.epochs[n] !== d) A(`equivocation: epoch ${n} changed since this browser saw it`);
@@ -617,7 +623,7 @@ async function check() {
   if (!alarms.length) {
     row(AL, "ok", seen ? "Nothing went backwards since this browser last looked." : "First look from this browser; what it saw is now remembered here.");
     const epochs = { ...(seen?.epochs || {}) }; for (const [n, d] of history) epochs[n] = d;
-    try { localStorage.setItem(key, JSON.stringify({ epoch: dir.epoch, digest, epochs, registrars: heads })); } catch { /* a private window */ }
+    try { localStorage.setItem(key, JSON.stringify({ epoch: dir.epoch, digest, epochs, registrars: heads, clock: index.clock === "wall" ? "wall" : undefined })); } catch { /* a private window */ }
     $("verdict").className = "verdict good"; $("verdict").innerHTML = `<span class="v">NO ALARM</span><span>every check above passed</span>`;
   } else {
     for (const a of alarms) row(AL, "alarm", esc(a));

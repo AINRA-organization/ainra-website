@@ -68,25 +68,30 @@ async function connect(base) {
   // Derived, not asserted: a TEST-ROOT ⇒ no production log exists ⇒ 0 sealed. (A real root would report its own count.)
   set("logs-sealed", isTestRoot ? "0" : String(t.sealed ?? 0));
 
-  // WHEN, not just what — but from the right field. `generated_window.verified_at` is NOT a publication time: it is
-  // the pinned instant staging computes its validity window against (seed.rs::VERIFY_NOW), identical in a record
-  // published today and one published a year ago. Reading an age out of it announced "110 days ago" over a file that
-  // is byte-identical to what the network serves this second. The real publication time is stamped at copy time by
+  // WHEN, not just what — but from the right field, and which field is right depends on the clock the record states.
+  // On a PINNED record (no "clock" field) `generated_window.verified_at` is NOT a publication time: it is the pinned
+  // instant staging computes its validity window against (seed.rs::VERIFY_NOW), identical in a record published today
+  // and one published a year ago. Reading an age out of it announced "110 days ago" over a file that is
+  // byte-identical to what the network serves this second. The real publication time is stamped at copy time by
   // `make site-net` into published.json, so ask that; when it is absent, say nothing rather than infer.
+  // A record that states `"clock": "wall"` keeps real time, and there verified_at IS a date: when the network last
+  // published. The stamp is still asked first (the copy is what ages); only an unstamped copy falls back to it.
   const liveNow = /^https?:/i.test(base);
   if (liveNow) {
     set("as-of", "answering now");
   } else {
-    try {
-      const p = await getJSON(base + "/published.json", { cache: "no-store" });
-      if (p?.published_at_iso) {
-        // D-058: the horizon, not just the age. Past it the page says so itself, from the data — nobody has to
-        // remember to edit copy when the project stops being maintained, which is precisely when nobody will.
-        const { state, text } = staleness(p.published_at_iso);
-        set("as-of", text);
-        document.querySelectorAll("[data-staleness]").forEach((el) => { el.dataset.staleness = state; });
-      }
-    } catch { /* an unstamped copy states no date, which is the honest alternative to a guessed one */ }
+    let iso = null;
+    try { iso = (await getJSON(base + "/published.json", { cache: "no-store" }))?.published_at_iso || null; }
+    catch { /* an unstamped copy */ }
+    const at = reg.generated_window?.verified_at;
+    if (!iso && reg.clock === "wall" && Number.isInteger(at) && at > 0) iso = new Date(at * 1000).toISOString().replace(/\.\d+Z$/, "Z");
+    if (iso) {
+      // D-058: the horizon, not just the age. Past it the page says so itself, from the data — nobody has to
+      // remember to edit copy when the project stops being maintained, which is precisely when nobody will.
+      const { state, text } = staleness(iso);
+      set("as-of", text);
+      document.querySelectorAll("[data-staleness]").forEach((el) => { el.dataset.staleness = state; });
+    } // else: a pinned, unstamped copy states no date, which is the honest alternative to a guessed one
   }
   set("state", liveNow ? "answering now" : "published record");
 

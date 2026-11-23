@@ -350,3 +350,66 @@ a.index-row:hover .index-row__idx::after{transform:translateX(3px)}
 .verdict .tamper{margin-top:var(--s5)}
 .ticker__head > span{white-space:nowrap;overflow:hidden;text-overflow:clip}
 @media (max-width:600px){.ticker__head{font-size:10px;letter-spacing:.04em}.ticker__btn{width:38px}}
+
+/* ── Touch, type and press rules, 22 Nov 2026 (interface guidelines and fluid-motion practice) ──────────────────
+   Measured with a browser audit of eleven pages at 1440 and 390 px. Three fixes, and one rule for how a press feels:
+   1. Touch: every control at least 44 × 44 on a phone ("offer sufficiently sized controls").
+      Inline links grow their hit area with padding and an equal negative margin, so no line moves.
+   2. Type: nothing under 11 px on a phone, nothing under 10 px anywhere (desktop minimum 10 pt).
+   3. The press shows on the press ("always include a press state for a custom button"; feedback on pointer-down). The
+      `.is-down` class is set on pointer-down by js/motion.mjs, before the browser's own :active on touch.
+   4. The menu enters from the control that opened it and leaves the same way (spatial consistency):
+      down from the header button, up from the phone tab bar's More. Under reduced motion or Motion off: no movement. */
+:where(a,button,[role=tab],summary){-webkit-tap-highlight-color:transparent}
+.is-down:where(button,[role=tab],.g-sq,.g-menubtn,.motion-btn,.code-panel__copy,.g-hero__pause,.ticker__btn){scale:.96}
+a.btn.is-down,button.btn.is-down{scale:.97}
+a.is-down:not(.btn):not(.g-sq){opacity:.6}
+html[data-motion="off"] .is-down{scale:none}
+
+.f label,.authority label,.verify-line,.passport .f .callout{font-size:10px}
+.dr{font-size:10px}
+/* These are floors, and living.css loads before g.css / g-shell.css on most pages: hence !important, here only. */
+/* desktop floor 28 px small links grow their hit area, not their look */
+nav:not([class]) a.brand,.announce a,.g-announce a,a.nw-feed{padding-block:4px;margin-block:-4px}
+.sec-head__row a{padding-block:6px!important;margin-block:-6px!important}
+.g-announce__x{min-width:28px;min-height:28px}
+.g-menu a{padding-block:4px;margin-block:-4px}
+.g-menu__note a{display:inline-block;padding-block:6px;margin-block:-6px}
+@media (max-width:700px){
+  .brand .mean,.g-menu__k,.g-side__head span,.g-side li span,.g-side__tab,.g-foot__cols h4,.g-foot__status,.g-search__k,
+  .life--ribbon .life__rule,.nw-kind,.nw-flag,.chip,.tier-chip,.g-announce__k,.g-hero__cue,.g-hero__spec span,.sec-index,
+  .ticker__head,.dr,.f label,.f .ok,.authority label,.authority div,.verify-line,.g-k,.live{font-size:11px!important}
+}
+@media (max-width:700px),(pointer:coarse){
+  .btn,nav:not([class]) .nav-r > .btn:first-child{min-height:44px!important;height:auto!important}
+  nav:not([class]) .nav-r .g-menubtn,nav:not([class]) .nav-r .g-sq{min-width:44px!important;max-width:44px!important;width:44px!important;height:44px!important;min-height:44px!important}
+  .g-hero__pause,.code-panel__copy,.g-announce__x{min-width:44px!important;min-height:44px!important}
+  .ticker__btn{width:44px!important;min-height:44px!important}
+  [role=tablist] [role=tab]{min-height:44px!important}
+  .g-foot .motion-btn,.motion-btn{min-height:44px!important}
+  .g-foot__cols a,.g-foot__pills a{display:inline-flex;align-items:center;min-height:44px;min-width:44px}
+  nav:not([class]) a.brand,.announce a,body .announce a,.g-announce a,.ticker__list a,a.nw-feed,a.is-current,.sec-head__row a{padding-block:12px;margin-block:-12px}
+  .g-menu__small a,nav.gi-sub a{display:inline-flex;align-items:center;min-height:44px}
+  .nw-chips button{min-height:44px!important}
+  nav.chapter-rail a{display:inline-flex;align-items:center;min-height:44px}
+  .g-menu__big li li a,.g-menu__kv a{display:inline-flex;align-items:center;min-height:44px}
+  .g-menu__note a{display:inline-block;padding-block:14px;margin-block:-14px}
+  .code-panel p code{font-size:11px!important}
+  .sec-head__row a{padding-block:13px!important;margin-block:-13px!important}
+}
+
+.g-menu:not([hidden]){animation:g-menu-in .32s var(--ease-out)}
+.g-menu[data-from="bottom"]:not([hidden]){animation-name:g-menu-up}
+.g-menu.is-leaving{animation:g-menu-out .2s cubic-bezier(.5,0,.75,0) forwards}
+.g-menu[data-from="bottom"].is-leaving{animation-name:g-menu-down}
+@keyframes g-menu-in{from{opacity:0;transform:translateY(-12px)}}
+@keyframes g-menu-up{from{opacity:0;transform:translateY(28px)}}
+@keyframes g-menu-out{to{opacity:0;transform:translateY(-12px)}}
+@keyframes g-menu-down{to{opacity:0;transform:translateY(28px)}}
+html[data-motion="off"] .g-menu{animation:none!important}
+@media (prefers-reduced-motion:reduce){html:not([data-motion="on"]) .g-menu{animation:none!important}}
+
+/* ── Icons for actions, Life glyphs for states (23 Nov) ───────────────────────────────────────────────────────────
+   Controls carry an outline icon from a third-party set (Apache-2.0; third-party/runeicons/LICENSE, THIRD-PARTY.md). States keep the
+   site's own Life glyphs: a copy button shows the copy icon while it waits, and the still block once it has copied. */
+:where(.code-panel__copy,#askCopy,[data-copy]):not(.is-copied)::before{content:"";display:inline-block;width:13px;height:13px;margin-right:7px;vertical-align:-2px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E") center/contain no-repeat}

@@ -12,14 +12,21 @@ if (menu && btn) {
   const focusables = () => [...menu.querySelectorAll("a, button")].filter((e) => !e.hidden);
   // while the menu is open everything behind it is inert: focus, clicks and screen readers stay in the menu and header
   const behind = (on) => { for (const el of document.body.children) if (el !== menu && !el.contains(btn) && el.tagName !== "SCRIPT") el.inert = on; };
-  const open = () => { last = document.activeElement; menu.hidden = false; behind(true); html.classList.add("g-menu-open");
+  // the sheet comes from the control that opened it and leaves the same way (living.css, "Touch, type and press rules")
+  let from = "top";
+  const still = () => html.dataset.motion === "off" || (matchMedia("(prefers-reduced-motion: reduce)").matches && html.dataset.motion !== "on");
+  const open = () => { last = document.activeElement; menu.classList.remove("is-leaving"); menu.dataset.from = from; from = "top"; menu.hidden = false; behind(true); html.classList.add("g-menu-open");
     // the header now stays above the open sheet, so the sheet's first line starts below the header's lower edge
     const nb = document.querySelector("nav:not([class]) .nav-in")?.getBoundingClientRect().bottom || 0; menu.style.paddingTop = `${Math.max(96, Math.round(nb + 24))}px`; btn.setAttribute("aria-expanded", "true"); btn.querySelector("span").textContent = "Close"; focusables()[0]?.focus(); };
-  const close = () => { menu.hidden = true; behind(false); html.classList.remove("g-menu-open"); btn.setAttribute("aria-expanded", "false"); btn.querySelector("span").textContent = "Menu"; (last && last.isConnected ? last : btn).focus(); };
+  const close = () => {
+    const done = () => { if (menu.classList.contains("is-leaving") || still()) { menu.hidden = true; menu.classList.remove("is-leaving"); } };
+    if (still() || menu.hidden) menu.hidden = true;
+    else { menu.classList.add("is-leaving"); menu.addEventListener("animationend", done, { once: true }); setTimeout(done, 320); }
+    behind(false); html.classList.remove("g-menu-open"); btn.setAttribute("aria-expanded", "false"); btn.querySelector("span").textContent = "Menu"; (last && last.isConnected ? last : btn).focus(); };
   btn.addEventListener("click", () => (menu.hidden ? open() : close()));
   // a phone's tab bar ends in More: the same menu, and it says whether the menu is open
   const more = document.querySelector("[data-nav-more]");
-  if (more) { more.addEventListener("click", () => btn.click());
+  if (more) { more.addEventListener("click", () => { if (menu.hidden) from = "bottom"; btn.click(); });
     new MutationObserver(() => more.setAttribute("aria-expanded", btn.getAttribute("aria-expanded"))).observe(btn, { attributes: true, attributeFilter: ["aria-expanded"] }); }
   menu.addEventListener("click", (e) => { if (e.target.closest("a") || e.target === menu || e.target.parentElement === menu) close(); });   // a link, or the sheet's empty space
   addEventListener("keydown", (e) => {
