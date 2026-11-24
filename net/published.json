@@ -1,13 +1,14 @@
 {
-  "published_at": 1794953713,
-  "published_at_iso": "2026-11-17T22:15:13Z",
+  "published_at": 1795466103,
+  "published_at_iso": "2026-11-23T20:35:03Z",
   "network": "staging",
   "root": "test-root",
-  "note": "When this copy of the read contract was taken from the network. NOT generated_window.verified_at, which is a pinned staging constant and says nothing about age.",
+  "clock": "wall",
+  "note": "When this copy of the read contract was taken from the network. The network keeps real time: generated_window.verified_at is when the network last published its record, at or before this.",
   "sha256": {
-    "index.json": "79b3931a9192ebaef1b89d6f666f2d2c0af097e6ecc59ba530f8fab1887779e7",
-    "registry.json": "c48651ece89eb083aba9088ed438bc872701d359eaefc28799ecb3b054ba5357",
-    "directory.json": "9e7ef59e18bb6cd44a20a5adf7ed23481a655543659610bd12c49bca3ad650cf",
+    "index.json": "b68d2912215ae898653588cd35a324179996beedea9589b55d3a09d6cbee81b7",
+    "registry.json": "82db0c75c1fd51f3e29c0cd78ed1d7387884c454bf0593f07095427c8a431983",
+    "directory.json": "8ce26acd5e3e546e774d391cee9916b84e0e4aa79d2b84192e6b18970dc519ec",
     "roots.json": "b7de9f94d7785538fc08efb23a12c79fe754b00b22117fc3bd53007ca4c32c96"
   }
 }

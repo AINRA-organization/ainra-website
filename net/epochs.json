@@ -17,6 +17,15 @@
       "path": "epochs/2.json",
       "proposal": null,
       "sha256": "9e7ef59e18bb6cd44a20a5adf7ed23481a655543659610bd12c49bca3ad650cf"
+    },
+    {
+      "ceremony": null,
+      "digest": "132370821af97979a6619ec9860361fb61a139712ced2a33d8aa362f57b83205",
+      "epoch": 3,
+      "issued_at": 1795466017,
+      "path": "epochs/3.json",
+      "proposal": null,
+      "sha256": "8ce26acd5e3e546e774d391cee9916b84e0e4aa79d2b84192e6b18970dc519ec"
     }
   ],
   "version": 1

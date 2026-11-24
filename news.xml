@@ -8,6 +8,14 @@
   <updated>2026-11-23T12:00:00Z</updated>
   <author><name>AINRA</name></author>
   <entry>
+    <title>The test network now keeps real time</title>
+    <link href="https://ainra.org/news.html#n-the-test-network-keeps-real-time"/>
+    <id>https://ainra.org/news.html#n-the-test-network-keeps-real-time</id>
+    <updated>2026-11-23T12:00:00Z</updated>
+    <category term="network"/>
+    <content type="html">&lt;p&gt;Our test network used to live on one fixed day in April 2026. Every passport on it was checked as of that day, and the record this site publishes said so. That made our tests repeatable. It also meant the network never had to show what time asks of it: that its parts renew themselves, that a signed directory grows old, and that someone signs it again.&lt;/p&gt;&lt;p&gt;On 23 November it moved to the real clock. Its root signed the directory again, dated that day, as epoch 3. The root, the registrars' keys, their logs and the fifteen passports are the same, and so are their verdicts: nine valid, six switched off. The control room on this site now checks the directory against today's date, with no alarm.&lt;/p&gt;&lt;p&gt;From now on the directory must be signed again at least every 92 days, as our published cadence says, or the control room raises an alarm. It is still a test network under a test root, and every passport on it expires on 12 April 2027.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/JacobJandon/ainra/blob/main/docs/DECISIONS.md&quot;&gt;Decision D-125&lt;/a&gt; · &lt;a href=&quot;https://ainra.org/control.html&quot;&gt;The control room&lt;/a&gt; · &lt;a href=&quot;https://ainra.org/net/epochs.json&quot;&gt;All three epochs&lt;/a&gt;&lt;/p&gt;</content>
+  </entry>
+  <entry>
     <title>The site's checkers now check a bound delegation chain, and no longer refuse one</title>
     <link href="https://ainra.org/news.html#n-site-checks-bound-chains"/>
     <id>https://ainra.org/news.html#n-site-checks-bound-chains</id>

@@ -42,7 +42,7 @@
 body{font-family:var(--body);background:var(--paper);color:var(--ink);font-size:.97rem;line-height:1.6;-webkit-font-smoothing:antialiased}
 ::selection{background:var(--green);color:#fff}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)} /* the site's frame: at 1000px the hero title had 206px and broke as "Con / trol" */
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
 h1,h2,h3{font-family:var(--display);letter-spacing:-.02em}
 button{font-family:var(--body);cursor:pointer;border:none;background:none;color:inherit}
@@ -196,6 +196,7 @@ footer{padding:52px 0 40px;border-top:1px solid var(--line);margin-top:92px}
 }
 nav .nav-links a[aria-current="page"],nav .ndocs[aria-current="page"]{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
 @media(max-width:480px){.announce{font-size:11px;padding:8px 12px}}
+body .announce{display:block} /* plain text here, no .wrap: as a flex row each text run became its own column on a phone */
 body .announce a{display:inline-block;padding:6px 0;margin:-6px 0}
 @media(max-width:700px){.panel .tag{font-size:11px}.actions button{min-height:44px}body .announce a{padding:15px 0;margin:-15px 0}}
 @media(max-width:1023px){nav .mean{display:none}}
@@ -236,11 +237,22 @@ body .announce a{display:inline-block;padding:6px 0;margin:-6px 0}
 .rows li:first-child{border-top:0}
 .tag{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;min-width:52px}
 .tag.ok{color:var(--green)} .tag.alarm{color:var(--red)} .tag.warn{color:var(--amber)} .tag.info{color:var(--muted)}
+.panel .rows .tag,table.ep .tag{float:none;display:inline-block;text-align:center;flex:none} /* ".panel .tag" floats for another page's headings; here a floated cell left the table */
+.panel .tag.info{border-color:transparent} /* a neutral line: the dot alone, aligned with the boxed verdicts */
 .rows code,.mono{font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere}
 table.ep{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
 table.ep th,table.ep td{text-align:left;padding:6px 8px;border-top:1px solid var(--line)}
 table.ep td:nth-child(2){white-space:nowrap}  /* the issue date stays one word on a phone; the fingerprint beside it may still break */
 table.ep th{color:var(--muted);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-top:0}
+@media(max-width:560px){ /* the epoch table fits a phone without a sideways scroll; nothing under 11px */
+  .panel{padding:20px 16px}
+  table.ep{font-size:11.5px}
+  table.ep th,table.ep td{padding:6px 4px}
+  table.ep th{letter-spacing:0}
+  table.ep td:nth-child(3){word-break:break-all}
+  table.ep .tag{min-width:0;padding:3px 5px}
+}
+@media(max-width:340px){.panel{padding:18px 10px}table.ep th,table.ep td{padding:6px 3px}}
 .limits{margin-top:26px;color:var(--muted);font-size:14px;max-width:78ch}
 .limits li{margin:6px 0 0 18px}
 .actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
@@ -459,7 +471,7 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
     <span class="live">ROOT STATUS: <span class="nw">PRE-CEREMONY</span></span>
     <span>LOGS SEALED: 0 · WITNESSES: 0 — <span class="nw">SPLIT-VIEW</span> GUARANTEE NOT IN FORCE · <a href="https://github.com/JacobJandon/ainra/blob/main/outreach/WITNESS-CALL.md">RECRUITING</a> · SPEC PUBLIC · CLI v0.3.5</span>
     <span>ISSUES NOTHING · SCORES NOTHING · SEES NO PII · FAVORS NO ONE</span>
-    <span class="rclock" data-record-clock><span class="rclock__l"><span class="rclock__k">PUBLISHED RECORD</span> <span data-stamp="published-iso"><span class="nw">2026-11-17T22:15:13Z</span></span></span><span class="rclock__s"><span class="rclock__k">RECORD</span> <span data-stamp="published-date"><span class="nw">2026-11-17</span></span></span><span data-rc-more hidden> · <span class="rclock__l"><span class="rclock__k">AGE</span> <span data-rc-age></span></span><span class="rclock__s" data-rc-days></span> · <b data-rc-state></b></span></span>
+    <span class="rclock" data-record-clock><span class="rclock__l"><span class="rclock__k">PUBLISHED RECORD</span> <span data-stamp="published-iso"><span class="nw">2026-11-23T20:35:03Z</span></span></span><span class="rclock__s"><span class="rclock__k">RECORD</span> <span data-stamp="published-date"><span class="nw">2026-11-23</span></span></span><span data-rc-more hidden> · <span class="rclock__l"><span class="rclock__k">AGE</span> <span data-rc-age></span></span><span class="rclock__s" data-rc-days></span> · <b data-rc-state></b></span></span>
     <span class="openbadge"><svg viewBox="0 0 160 160" aria-hidden="true" style="color:#8A93A0"><use href="#ainra-crest"/></svg>An open standard · held by no one</span>
   </div>
 </footer>
@@ -543,7 +555,7 @@ async function check() {
       if (!signed) A(`epoch ${e.epoch} does not verify under both roots`);
       if (signed && !listed) A(`epochs.json says epoch ${e.epoch} has digest ${String(e.digest).slice(0, 16)}, its file says ${got.slice(0, 16)}`);
       history.push([e.epoch, got]);
-      html += `<tr><td>${esc(e.epoch)}</td><td>${e.issued_at ? new Date(e.issued_at * 1000).toISOString().slice(0, 10) : "?"}</td><td>${esc(got.slice(0, 16))}</td><td class="tag ${signed ? "ok" : "alarm"}">${signed ? "YES" : "NO"}</td><td class="tag ${listed ? "ok" : "alarm"}">${listed ? "YES" : "NO"}</td></tr>`;
+      html += `<tr><td>${esc(e.epoch)}</td><td>${e.issued_at ? new Date(e.issued_at * 1000).toISOString().slice(0, 10) : "?"}</td><td>${esc(got.slice(0, 16))}</td><td><span class="tag ${signed ? "ok" : "alarm"}">${signed ? "YES" : "NO"}</span></td><td><span class="tag ${listed ? "ok" : "alarm"}">${listed ? "YES" : "NO"}</span></td></tr>`;
     }
     const last = list[list.length - 1];
     if (last && (last.epoch !== dir.epoch || last.digest !== digest)) A(`the current directory (epoch ${dir.epoch}) is not the newest epoch the history lists`);
