@@ -80,7 +80,7 @@ Signatures prove *who*; reproducibility proves *what*. Clone the **tagged** sour
 trust in the builder required:
 
 ```sh
-git clone --branch <version> https://github.com/JacobJandon/ainra && cd ainra
+git clone --branch <version> https://github.com/AINRA-organization/ainra && cd ainra
 make repro                                     # rebuilds MANIFEST.sha256 from source, byte-identical ×2
 tar -xzf /path/to/ainra-vectors-<version>.tar.gz   # the released corpus
 diff <(sort MANIFEST.sha256) <(sort ./MANIFEST.sha256)   # released manifest == rebuilt-from-source manifest
@@ -99,7 +99,7 @@ maintainer, offline** — the release key never enters CI (D-042). So a publishe
 
 ```sh
 # 1. fetch a release's assets
-gh release download <version> -R JacobJandon/ainra
+gh release download <version> -R AINRA-organization/ainra
 # 2. run steps 1-4 above against them: signature, manifest, provenance/SBOM, then the strong rebuild.
 ```
 

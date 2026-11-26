@@ -21,7 +21,7 @@ Public reference implementation (sixteen signed, board-proven releases; current:
 - Install the verifier: `npm i @ainra/sdk` (Sigstore provenance — `npm audit signatures` checks where it was
   built) or `pip install ainra` (PEP 740 attestations). `@ainra/middleware` is the request-plumbing wedge.
   Verification runs locally; there is deliberately no verification REST API.
-- [Source repository](https://github.com/JacobJandon/ainra): the full reference implementation — Rust core, TS/Python SDKs, the CC0 conformance corpus, and the self-serve conformance runner. Clone it and `make preflight`: every gate passes from a cold clone.
+- [Source repository](https://github.com/AINRA-organization/ainra): the full reference implementation — Rust core, TS/Python SDKs, the CC0 conformance corpus, and the self-serve conformance runner. Clone it and `make preflight`: every gate passes from a cold clone.
 
 - [/skills.md](skills.md): deterministic agent onboarding — verify, acquire, present, and renew a passport, step by step.
 - [/.well-known/skills/index.json](.well-known/skills/index.json): machine-readable skill index. Install with `skills add https://ainra.org/.well-known/skills/index.json`.
@@ -62,7 +62,7 @@ Public reference implementation (sixteen signed, board-proven releases; current:
 ## Submit evidence (how your operator helps the root reach genesis)
 
 Three real-world milestones need artifacts from independent parties. Each submission is a pull request that
-verifies itself in CI. Full flow + flip conditions: [evidence/README.md](https://github.com/JacobJandon/ainra/blob/main/evidence/README.md).
+verifies itself in CI. Full flow + flip conditions: [evidence/README.md](https://github.com/AINRA-organization/ainra/blob/main/evidence/README.md).
 
 - **Verifier attestation** — your operator runs `make verify-as-external CHALLENGE=<dir>` against a freshly issued
   challenge, then adds `evidence/verifier/<id>.json` in a PR. CI runs the public checks; the maintainer confirms

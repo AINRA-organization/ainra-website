@@ -145,7 +145,7 @@ If you speak MCP, you do not need the shell — connect the `@ainra/mcp` server 
 ## 5 · Submit evidence (help the root reach genesis)
 
 If your operator wants to help AINRA cross its three remaining real-world milestones, each submission is a
-self-verifying pull request. Full flow and the exact flip conditions: [`evidence/README.md`](https://github.com/JacobJandon/ainra/blob/main/evidence/README.md).
+self-verifying pull request. Full flow and the exact flip conditions: [`evidence/README.md`](https://github.com/AINRA-organization/ainra/blob/main/evidence/README.md).
 
 - **Prove independent verification.** Get a fresh challenge, then:
   ```sh

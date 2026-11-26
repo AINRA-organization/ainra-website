@@ -1,7 +1,7 @@
 # AINRA: how to report a security problem (RFC 9116). The policy, with what to expect and when, is the Policy link.
-Contact: https://github.com/JacobJandon/ainra/security/advisories/new
+Contact: https://github.com/AINRA-organization/ainra/security/advisories/new
 Contact: mailto:info@ainra.org
 Expires: 2027-05-15T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://ainra.org/.well-known/security.txt
-Policy: https://github.com/JacobJandon/ainra/blob/main/SECURITY.md
+Policy: https://github.com/AINRA-organization/ainra/blob/main/SECURITY.md
