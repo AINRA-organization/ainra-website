@@ -93,7 +93,7 @@ const feedW = () => (vw > 900 && !SHORT.matches && !tour.on && !$("#feed").class
 // screen the camera looks from the front and from high up: the orbit fills the width, and you stay on screen below it.
 // What the world has to itself. The details stand at the side (or rise from the foot on an upright phone), the walk's
 // caption stands at the side on a short screen: all measured, so a chosen part is fitted and centred in what is left.
-let capPx = 0, capTop = 0, sheetPx = 0, sheetH = 0, topPx = 66;
+let capPx = 0, capTop = 0, timeTop = 0, sheetPx = 0, sheetH = 0, topPx = 66;
 const sheetOpen = () => sheetPos.to !== 1;
 // The walk's caption gives way while the details are open, at every size: one panel at a time, never two. Where the
 // caption stands at the side (a wide or a short screen) its width is taken off what the world has.
@@ -104,13 +104,15 @@ const aside = () => SHORT.matches && (tour.on || sheetOpen());       // a short 
 // the scene is centred below the top bar instead. An upright screen keeps the small lift.
 const restLift = () => (aside() ? -topPx / vh : SHORT.matches ? 0.3 : 0.1);
 // During the walk on an upright phone or tablet (up to 900 px wide) the caption takes the foot. The scene then has
-// the band between the top bar and the caption: it is centred there, and each stop is fitted to it. Read every
-// frame, as the rest lift is, so that a longer caption or a turn of the screen in the middle of the walk moves the
-// scene with it.
+// the band between the top bar and the caption: it is centred there, and each stop is fitted to it. On a wide screen
+// the caption stands at the side and the band is the one between the top bar and the timeline. Read every frame, as
+// the rest lift is, so that a longer caption or a turn of the screen in the middle of the walk moves the scene.
 const footCap = () => vw <= 900 && !SHORT.matches;
-const band = () => (tour.on && footCap() && !sheetOpen() ? Math.max(120, capTop - 8 - topPx) : 0);
+const footBand = () => (tour.on && footCap() && !sheetOpen() ? Math.max(120, capTop - 8 - topPx) : 0);
+const wideBand = () => (tour.on && vw > 900 && !SHORT.matches && !sheetOpen() && timeTop > topPx ? Math.max(120, timeTop - 8 - topPx) : 0);
+const band = () => footBand() || wideBand();
 const tourLift = () => { const b = band(); return b ? 1 - (2 * topPx + b) / vh - restLift() : 0; };
-const home = () => { const b = band(), a = Math.min(freeW(), b || vh * 9) / Math.max(1, vh); return a < 0.9 ? { yaw: 0, pitch: 0.95, dist: clamp(1640 / a, 1700, 3600), t: [0, 0, 70] } : { yaw: 0.28, pitch: 0.3, dist: clamp(1880 / a, 1520, 2800) * (SHORT.matches ? 1.22 : 1), t: [0, 110, 0] }; };
+const home = () => { const b = footBand(), a = Math.min(freeW(), b || vh * 9) / Math.max(1, vh); return a < 0.9 ? { yaw: 0, pitch: 0.95, dist: clamp(1640 / a, 1700, 3600), t: [0, 0, 70] } : { yaw: 0.28, pitch: 0.3, dist: clamp(1880 / a, 1520, 2800) * (SHORT.matches ? 1.22 : 1), t: [0, 110, 0] }; };
 function flyTo(t, dist, { yaw, pitch } = {}) {                                                 // always from wherever the camera is now
   for (const s of SPR) s.set(0.85, 1);
   cam.tx.go(t[0]); cam.ty.go(t[1]); cam.tz.go(t[2]); cam.dist.go(clamp(dist, DIST[0], DIST[1])); cam.vyaw = cam.vpitch = 0;
@@ -119,7 +121,7 @@ function flyTo(t, dist, { yaw, pitch } = {}) {                                  
  
 }
 // How far back the camera must be for a ball of this radius to fit the narrower side of the screen.
-const fit = (radius) => radius * 1.3 / (Math.tan(FOV / 2) * Math.min(1, freeW() / vh, sheetOpen() && phone() ? 1.5 * Math.max(60, vh - sheetH - 24 - topPx) / vh : band() ? 1.3 * band() / vh : 1));
+const fit = (radius) => radius * 1.3 / (Math.tan(FOV / 2) * Math.min(1, freeW() / vh, sheetOpen() && phone() ? 1.5 * Math.max(60, vh - sheetH - 24 - topPx) / vh : band() ? 1.2 * band() / vh : 1));
 const resetView = () => { const h = home(); flyTo(h.t, h.dist, { yaw: h.yaw, pitch: h.pitch }); };
 const zoomBy = (f) => { cam.dist.set(0.35, 1).go(clamp((cam.dist.on ? cam.dist.to : cam.dist.x) * f, DIST[0], DIST[1])); };
 function matrices() {
@@ -145,7 +147,7 @@ function resize() {
   vw = innerWidth; vh = innerHeight; dpr = Math.min(devicePixelRatio || 1, dprCap);
   eng.resize(Math.round(vw * dpr), Math.round(vh * dpr));
   lab.width = Math.round(vw * dpr); lab.height = Math.round(vh * dpr);
-  sheetPx = sheet.offsetWidth + 16; sheetH = sheet.offsetHeight; topPx = $(".top").getBoundingClientRect().bottom + 8;
+  sheetPx = sheet.offsetWidth + 16; sheetH = sheet.offsetHeight; topPx = $(".top").getBoundingClientRect().bottom + 8; timeTop = $("#time").getBoundingClientRect().top;
   measureCap();
 }
 
@@ -543,10 +545,11 @@ function makeTour() {
     { t: "The directory", p: `The orbit is the directory, epoch ${W.CUR}: the short list of registrars the root vouches for, signed again at least every 92 days. The fainter rings inside are the epochs it replaced.`, go: () => flyTo([0, 0, 0], Math.max(1350, fit(W.RING + 150)), { pitch: 1.0, yaw: 0.3 }) },
     { t: "A registrar", p: `${r0.id} issues passports to the agents of the companies it has checked, and it alone can switch them off. It stands on the orbit because the directory names it.`, go: () => flyTo(r0.centre, fit(r0.ringR) * 1.1, { pitch: 0.3, yaw: 0.2 }) },
     { t: "Its log", p: `Every passport is written into the registrar's log before it counts. The ring around the globe is that log: ${r0.size} entries in order, each passport a moon at its own entry. All of them are hashed into one signed head, so nothing can be changed or removed unseen, and the witness cosigns each head.`, go: () => { mark = W.byId[r0.headId]; flyTo(r0.centre, fit(r0.ringR), { pitch: 0.42, yaw: 0.1 }); } },
-    { t: "Its status list", p: `The ${r0.list.bit_len.toLocaleString("en")} dots of this globe are the registrar's status list, signed as one small file. Each passport owns one dot, counted from the top: full while it is in service, hollow once it is switched off. Anyone can hold a copy, so checking needs nobody's permission.`, go: () => flyTo([r0.centre[0], r0.centre[1] + r0.globeR * 0.5, r0.centre[2]], fit(r0.globeR) * 1.05, { pitch: 0.7, yaw: 0.25 }) },
+    { t: "Its status list", p: `The ${r0.list.bit_len.toLocaleString("en")} dots of this globe are the registrar's status list, signed as one small file. Each passport owns one dot, counted from the top: full while it is in service, hollow once it is switched off. Anyone can hold a copy, so checking needs nobody's permission.`, go: () => flyTo(r0.centre, fit(r0.globeR) * 1.05, { pitch: 0.7, yaw: 0.25 }) },
     { t: "You, the verifier", p: "You stand outside the network holding copies. The blue thread is a real check of one passport, run in this tab: its entry in the log, the registrar, the directory, the root, and its status bit. The heavy arcs are its proof: a few hashes that stand for the rest of the log.", go: () => { resetView(); mark = okP; if (okP) tour.timer = setTimeout(() => { if (!live()) applyStep(W.events.length, true); check(okP); }, RM.matches ? 0 : 900); } },
     { t: "The off switch", p: offP ? `Watch ${short(offP.rec.sub)}. Its registrar sets one bit, and every verifier that checks refuses that agent, each within the freshness window it chose, with no call to anyone. The refusal you see is this tab's own.` : "A registrar sets one bit, and every verifier that checks refuses that passport, each within the freshness window it chose.", go: () => {
-      if (!offP) return; mark = offP; flyTo([r0.centre[0], r0.centre[1] + r0.globeR * 0.6, r0.centre[2]], fit(r0.ringR) * 0.9, { pitch: 0.6, yaw: 0.2 });
+      if (!offP) return; mark = offP; const d7 = fit(r0.ringR);                                    // the whole ring in view: seen from here it is nearly a circle,
+      flyTo([r0.centre[0], r0.centre[1] - 0.5 * r0.ringR * r0.ringR / d7, r0.centre[2]], d7, { pitch: 0.6, yaw: 0.2 });   // and its near side looks larger, so the aim is a little below the centre
       applyStep(ev, true); tour.timer = setTimeout(() => { applyStep(ev + 1); tour.timer = setTimeout(() => { applyStep(W.events.length, true); offP.verdict = null; check(offP); }, RM.matches ? 0 : 1300); }, RM.matches ? 0 : 1200); } },
   ];
   const lad = $("#ladder"); tour.stops.forEach((s, i) => { const li = document.createElement("li"), b = document.createElement("button"); b.type = "button"; b.title = s.t; b.setAttribute("aria-label", `Stop ${i + 1}: ${s.t}`); b.addEventListener("click", () => tourShow(i)); li.append(b); lad.append(li); });
@@ -557,6 +560,8 @@ function capMore() { const cp = $("#capP"), over = cp.scrollHeight > cp.clientHe
 $("#capP").addEventListener("scroll", capMore, { passive: true });
 function measureCap() { const cap = $("#caption"); if (cap.offsetWidth) { capPx = cap.offsetWidth + 24; capTop = cap.offsetTop; capMore(); } }
 new ResizeObserver(measureCap).observe($("#caption"));
+// The timeline's top edge bounds the walk's band on a wide screen. It moves when its text line is filled or wraps.
+new ResizeObserver(() => { timeTop = $("#time").getBoundingClientRect().top; }).observe($("#time"));
 function tourShow(i) {
   clearTimeout(tour.timer); mark = null; tour.i = clamp(i, 0, tour.stops.length - 1); const s = tour.stops[tour.i];
   if (!live()) applyStep(W.events.length, true); setPlaying(false);
@@ -564,8 +569,10 @@ function tourShow(i) {
   [...$("#ladder").querySelectorAll("button")].forEach((b, k) => k === tour.i ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current"));
   $("#capPrev").disabled = tour.i === 0; $("#capNext").textContent = tour.i === tour.stops.length - 1 ? "Finish" : "Next"; s.go();
 }
-function tourStart() { tour.on = true; document.body.classList.add("touring"); closeSheet(undefined, true); $("#caption").hidden = false; measureCap(); capShift.go(1); $("#tourBtn").setAttribute("aria-pressed", "true"); tourShow(0); }
-function tourEnd() { tour.on = false; document.body.classList.remove("touring"); mark = null; capShift.go(0); clearTimeout(tour.timer); if (!live()) applyStep(W.events.length, true); $("#caption").hidden = true; $("#tourBtn").setAttribute("aria-pressed", "false"); resetView(); }
+// The walk shows the whole network: a registrar chosen in the filter before it is set back to all (the filter itself
+// steps aside for the walk on the smaller screens, so it could not be undone there).
+function tourStart() { tour.on = true; document.body.classList.add("touring"); closeSheet(undefined, true); if (regFilter !== "all") setReg("all"); $("#caption").hidden = false; measureCap(); capShift.go(1); $("#tourBtn").setAttribute("aria-pressed", "true"); tourShow(0); }
+function tourEnd() { if (playing) setPlaying(false); tour.on = false; document.body.classList.remove("touring"); mark = null; capShift.go(0); clearTimeout(tour.timer); if (!live()) applyStep(W.events.length, true); $("#caption").hidden = true; $("#tourBtn").setAttribute("aria-pressed", "false"); resetView(); }
 $("#tourBtn").addEventListener("click", () => (tour.on ? tourEnd() : tourStart()));
 $("#capPrev").addEventListener("click", () => tourShow(tour.i - 1)); $("#capNext").addEventListener("click", () => (tour.i === tour.stops.length - 1 ? tourEnd() : tourShow(tour.i + 1))); $("#capEnd").addEventListener("click", tourEnd);
 
@@ -581,8 +588,11 @@ findIn.addEventListener("blur", () => setTimeout(() => findList.classList.remove
 function makeSeg(box, opts, start, onChoose) {
   const pill = document.createElement("i"); pill.className = "seg__pill"; box.append(pill);
   const btns = opts.map((o) => { const b = document.createElement("button"); b.type = "button"; for (const part of [].concat(o.label)) { if (typeof part === "string") b.append(part); else { const sp = document.createElement("span"); sp.className = part[0]; sp.textContent = part[1]; b.append(sp); } } if (o.title) b.title = o.title; b.addEventListener("click", () => { set(o.id); onChoose(o.id); }); box.append(b); return b; });
-  function set(id) { const i = Math.max(0, opts.findIndex((o) => o.id === id)); btns.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i))); const b = btns[i]; pill.style.width = `${b.offsetWidth}px`; pill.style.transform = `translateX(${b.offsetLeft}px)`; }
-  set(start); addEventListener("resize", () => set(opts[btns.findIndex((b) => b.getAttribute("aria-pressed") === "true")].id)); document.fonts?.ready.then(() => set(opts[btns.findIndex((b) => b.getAttribute("aria-pressed") === "true")].id));
+  // The highlight is measured from the chosen button. While the control is hidden there is nothing to measure, so the
+  // last measure is kept, and it is taken again whenever the control appears or changes size.
+  const place = () => { const b = btns.find((x) => x.getAttribute("aria-pressed") === "true"); if (!b || !b.offsetWidth) return; pill.style.width = `${b.offsetWidth}px`; pill.style.transform = `translateX(${b.offsetLeft}px)`; };
+  function set(id) { const i = Math.max(0, opts.findIndex((o) => o.id === id)); btns.forEach((b, k) => b.setAttribute("aria-pressed", String(k === i))); place(); }
+  set(start); new ResizeObserver(place).observe(box); addEventListener("resize", place); document.fonts?.ready.then(place);
   return { set };
 }
 let regSeg = null, regFilter = "all";
@@ -669,9 +679,9 @@ async function start() {
   // A turn of the screen changes the layout (upright phone or tablet, short screen, wide screen), so the view is
   // framed again for it: the chosen part, the walk's stop, or the resting view. Not while the search field is in
   // use: there a keyboard on the screen may be what changed the shape, and it goes away again, so the question
-  // waits for it.
+  // waits for it. If the walk is on and the new layout hides the filter, a registrar chosen in it goes back to all.
   const shape = () => (SHORT.matches ? 3 : innerWidth <= 760 ? 2 : innerWidth <= 900 ? 1 : 0); let was = shape();
-  const reframe = () => { if (document.activeElement === findIn || shape() === was) return; was = shape(); if (sel) focusOn(sel); else if (tour.on) tourShow(tour.i); else resetView(); };
+  const reframe = () => { if (document.activeElement === findIn || shape() === was) return; was = shape(); if (tour.on && regFilter !== "all" && !$("#regSeg").offsetWidth) setReg("all"); if (sel) focusOn(sel); else if (tour.on) tourShow(tour.i); else resetView(); };
   findIn.addEventListener("blur", () => setTimeout(reframe, 600));
   resize(); rest.jump(restLift()); feedShift.jump(feedW() ? 1 : 0); addEventListener("resize", () => { resize(); placeSheet(); narrowFind(); sayNow(); reframe(); });
   makeTrack(); makeTour();

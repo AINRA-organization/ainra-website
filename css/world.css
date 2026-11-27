@@ -244,8 +244,8 @@ body.detail .caption,body.touring .feed{display:none}
   /* while the details are open on a phone the filter and the counts step aside, so nothing lies over the chosen part */
   .detail #regSeg,.detail .feed{display:none}
   /* the walk's caption takes the foot of a phone and at most 44 % of its height: the world has the band above it to
-     itself, so the filter and the counts step aside, and the row of stops too (Back and Next remain) */
-  .touring #regSeg,.ladder{display:none}
+     itself, so the row of stops steps aside too (Back and Next remain) */
+  .ladder{display:none}
   .caption{display:flex;flex-direction:column;max-height:44dvh;padding:14px 16px}
   .caption p{flex:1;min-height:0;overflow:auto;font-size:14px}
 }
@@ -259,8 +259,9 @@ body.detail .caption,body.touring .feed{display:none}
   .feed .feed__h,.feed ol,.feed .feed__note{display:none}
   .stats{gap:16px;margin:0}.stats dd{font-size:20px}
   .tools{bottom:calc(var(--bot) + 70px)}
-  /* during the walk the caption takes the foot of a narrow screen: the timeline and the zoom buttons step aside */
-  .touring .time,.touring .tools{display:none}
+  /* during the walk the caption takes the foot of a narrow screen: the timeline, the zoom buttons and the registrar
+     filter step aside, so the band between the top bar and the caption is the world's alone */
+  .touring .time,.touring .tools,.touring #regSeg{display:none}
   .touring .caption{bottom:var(--bot)}
   .list{inset:calc(var(--top) + var(--tap) + 10px) 8px 8px;padding:14px}
 }
