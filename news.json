@@ -9,6 +9,28 @@
   },
   "entries": [
     {
+      "id": "world",
+      "date": "2026-11-26",
+      "kind": "network",
+      "major": false,
+      "title": "See the test network live",
+      "body": [
+        "A new page draws every part of the test network from its published record: the root, the directory it signs, both registrars, the witness, and all fifteen passports. Each registrar is a globe of 4,096 dots, its signed status list, one dot per bit. Its log is a ring around the globe, and each passport is a moon on that ring. A passport's dot is full while it is in service and hollow once its registrar has switched it off.",
+        "You are the verifier. Each blue thread is a real check of one passport, run in your browser by the verifier this site ships, without contacting anyone. The heavy arcs on the ring are its proof: a few hashes that stand for the rest of the log. A timeline replays the record with the dates it carries, a list shows every passport as a table, and the last stop of the walk-through replays a real switch-off. The positions and the motion are drawn; every part, count and verdict comes from the record."
+      ],
+      "proof": [
+        {
+          "label": "The page",
+          "href": "world.html"
+        },
+        {
+          "label": "The record it reads",
+          "href": "net/registry.json"
+        }
+      ],
+      "covers": {}
+    },
+    {
       "id": "the-test-network-keeps-real-time",
       "date": "2026-11-23",
       "kind": "network",

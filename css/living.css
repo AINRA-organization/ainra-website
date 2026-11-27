@@ -363,7 +363,7 @@ a.index-row:hover .index-row__idx::after{transform:translateX(3px)}
 :where(a,button,[role=tab],summary){-webkit-tap-highlight-color:transparent}
 .is-down:where(button,[role=tab],.g-sq,.g-menubtn,.motion-btn,.code-panel__copy,.g-hero__pause,.ticker__btn){scale:.96}
 a.btn.is-down,button.btn.is-down{scale:.97}
-a.is-down:not(.btn):not(.g-sq){opacity:.6}
+a.is-down:not(.btn):not(.g-sq):not(.world-dot){opacity:.6}
 html[data-motion="off"] .is-down{scale:none}
 
 .f label,.authority label,.verify-line,.passport .f .callout{font-size:10px}
@@ -413,3 +413,18 @@ html[data-motion="off"] .g-menu{animation:none!important}
    Controls carry an outline icon from a third-party set (Apache-2.0; third-party/runeicons/LICENSE, THIRD-PARTY.md). States keep the
    site's own Life glyphs: a copy button shows the copy icon while it waits, and the still block once it has copied. */
 :where(.code-panel__copy,#askCopy,[data-copy]):not(.is-copied)::before{content:"";display:inline-block;width:13px;height:13px;margin-right:7px;vertical-align:-2px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E") center/contain no-repeat}
+
+/* AINRA World's way in, on the home page: a still of the world in a circle, pinned bottom right. */
+.world-dot{position:fixed;z-index:55;right:56px;bottom:24px;width:104px;height:104px;border-radius:50%;display:grid;place-items:center;
+  background:var(--card);border:1px solid var(--ink);overflow:hidden;text-decoration:none;color:var(--ink);
+  box-shadow:0 1px 0 rgba(11,18,32,.04);transition:scale .25s var(--ease-out),opacity .25s}
+.world-dot img{grid-area:1/1;width:100%;height:100%;object-fit:cover;scale:1.02;transition:scale .6s var(--ease-out)}
+.world-dot__pill{grid-area:1/1;position:relative;z-index:1;display:inline-flex;align-items:center;gap:4px;padding:4px 9px 4px 10px;border-radius:999px;background:var(--ink);color:var(--paper);font:500 12px/1 var(--sans);letter-spacing:.01em}
+.world-dot__pill svg{width:11px;height:11px}
+.world-dot:hover img{scale:1.14}
+.world-dot.is-down,.world-dot:active{scale:.96}
+html.g-menu-open .world-dot,html.g-search-open .world-dot{opacity:0;pointer-events:none}
+@media (max-width:700px){.world-dot{width:72px;height:72px;right:16px;bottom:calc(88px + env(safe-area-inset-bottom))}.world-dot__pill{font-size:11px;padding:3px 7px 3px 8px}
+  /* on a phone the hero stays clear: the way in appears once the hero is scrolled past (index.html) */
+  .world-dot.is-later{opacity:0;scale:.9;pointer-events:none}}
+html[data-motion="off"] .world-dot img{transition:none}
