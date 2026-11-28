@@ -414,17 +414,34 @@ html[data-motion="off"] .g-menu{animation:none!important}
    site's own Life glyphs: a copy button shows the copy icon while it waits, and the still block once it has copied. */
 :where(.code-panel__copy,#askCopy,[data-copy]):not(.is-copied)::before{content:"";display:inline-block;width:13px;height:13px;margin-right:7px;vertical-align:-2px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22%3E%3Cpath d=%22M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z%22 fill=%22none%22 stroke=%22black%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E") center/contain no-repeat}
 
-/* AINRA World's way in, on the home page: a still of the world in a circle, pinned bottom right. */
-.world-dot{position:fixed;z-index:55;right:56px;bottom:24px;width:104px;height:104px;border-radius:50%;display:grid;place-items:center;
-  background:var(--card);border:1px solid var(--ink);overflow:hidden;text-decoration:none;color:var(--ink);
-  box-shadow:0 1px 0 rgba(11,18,32,.04);transition:scale .25s var(--ease-out),opacity .25s}
-.world-dot img{grid-area:1/1;width:100%;height:100%;object-fit:cover;scale:1.02;transition:scale .6s var(--ease-out)}
-.world-dot__pill{grid-area:1/1;position:relative;z-index:1;display:inline-flex;align-items:center;gap:4px;padding:4px 9px 4px 10px;border-radius:999px;background:var(--ink);color:var(--paper);font:500 12px/1 var(--sans);letter-spacing:.01em}
-.world-dot__pill svg{width:11px;height:11px}
-.world-dot:hover img{scale:1.14}
+/* AINRA World's way in, on the home page: a round window pinned bottom right, with a miniature of the world turning
+   inside it (js/world-dot.mjs) and its name on a tab at the foot. It steps out of the way while the page is scrolled
+   fast and comes back when the reader slows down; a press is answered at once, by a heavier rim; keyboard focus
+   always shows it. While the Details panel is open it stands beside the panel: that sideways place is the
+   `translate` property alone (--dot-x, set by the script), with the panel's own curve and duration for each
+   direction (g.css, .g-side), so stepping out of the way, which is `transform`, never restarts or bends it. */
+.world-dot{position:fixed;z-index:55;right:56px;bottom:30px;width:104px;height:104px;display:grid;place-items:center;text-decoration:none;color:var(--ink);
+  translate:var(--dot-x,0px) 0;transform-origin:62% 100%;
+  transition:transform .52s var(--ease-out),opacity .3s linear,scale .1s var(--ease-out),translate .55s cubic-bezier(.76,0,.24,1)}
+.world-dot.is-beside{transition:transform .52s var(--ease-out),opacity .3s linear,scale .1s var(--ease-out),translate .55s cubic-bezier(.22,1,.36,1)}
+.world-dot__view{grid-area:1/1;position:relative;width:100%;height:100%;border-radius:50%;overflow:hidden;background:var(--card);border:1px solid var(--ink);
+  transition:transform .5s var(--ease-out)}
+.world-dot__view img,.world-dot__view canvas{position:absolute;inset:0;width:100%;height:100%}
+.world-dot__view img{object-fit:cover;transition:opacity .4s linear}
+.world-dot.is-live .world-dot__view img{opacity:0}
+.world-dot__pill{grid-area:1/1;align-self:end;position:relative;z-index:1;display:inline-flex;align-items:center;gap:4px;padding:5px 9px 5px 11px;border-radius:999px;background:var(--ink);color:var(--paper);font:500 12px/1 var(--sans);letter-spacing:.01em;
+  transform:translateY(42%);transition:transform .32s var(--ease-out)}
+.world-dot__pill svg{width:11px;height:11px;transition:transform .32s var(--ease-out)}
+@media (hover:hover){.world-dot:hover .world-dot__view{transform:scale(1.05)}.world-dot:hover .world-dot__pill svg{transform:translate(1.5px,-1.5px)}}
 .world-dot.is-down,.world-dot:active{scale:.96}
+.world-dot.is-down .world-dot__view,.world-dot:active .world-dot__view{box-shadow:inset 0 0 0 2px var(--ink)}
+.world-dot.is-away{opacity:0;transform:translateY(16px) scale(.8);pointer-events:none;
+  transition:transform .3s cubic-bezier(.4,0,1,1),opacity .2s linear,translate .55s cubic-bezier(.76,0,.24,1)}
+.world-dot.is-beside.is-away{transition:transform .3s cubic-bezier(.4,0,1,1),opacity .2s linear,translate .55s cubic-bezier(.22,1,.36,1)}
 html.g-menu-open .world-dot,html.g-search-open .world-dot{opacity:0;pointer-events:none}
-@media (max-width:700px){.world-dot{width:72px;height:72px;right:16px;bottom:calc(88px + env(safe-area-inset-bottom))}.world-dot__pill{font-size:11px;padding:3px 7px 3px 8px}
-  /* on a phone the hero stays clear: the way in appears once the hero is scrolled past (index.html) */
-  .world-dot.is-later{opacity:0;scale:.9;pointer-events:none}}
-html[data-motion="off"] .world-dot img{transition:none}
+@media (max-width:700px){.world-dot{width:76px;height:76px;right:16px;bottom:calc(92px + env(safe-area-inset-bottom))}.world-dot__pill{font-size:11px;padding:4px 7px 4px 9px}
+  /* on a phone the hero stays clear: the way in appears once the hero is scrolled past (js/world-dot.mjs) */
+  .world-dot.is-later{opacity:0;transform:translateY(16px) scale(.8);pointer-events:none}}
+/* reached by keyboard it is always shown, wherever the page stands (after the rules above, so that it outranks them) */
+a.world-dot:focus-visible{opacity:1;transform:none;pointer-events:auto;outline:2px solid var(--ink);outline-offset:6px;border-radius:50%}
+html[data-motion="off"] .world-dot,html[data-motion="off"] .world-dot *{transition:none}

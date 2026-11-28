@@ -344,15 +344,13 @@ setTimeout(function(){var h=document.documentElement;if(!h.dataset.rvReady)h.cla
   </div>
 </footer>
 
-<!-- AINRA World: the way in, pinned like a window onto the network. The picture is a still of the live page. -->
+<!-- AINRA World: the way in, pinned like a window onto the network. Inside it a miniature of the world turns
+     (js/world-dot.mjs: a drawing, not the record); without scripts, or before they run, a still of the live page. -->
 <a class="world-dot" href="world.html" aria-label="AINRA World: see the test network live">
-  <img src="media/world-still.webp" alt="" width="104" height="104" decoding="async">
+  <span class="world-dot__view"><img src="media/world-still.webp" alt="" width="104" height="104" decoding="async"><canvas aria-hidden="true"></canvas></span>
   <span class="world-dot__pill">World<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 17V7H7M17 7L7 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
 </a>
-<script>/* the World way in: on a phone it waits below the hero, so the first screen stays clear */
-(function(){var d=document.querySelector(".world-dot"),h=document.querySelector(".g-hero");if(!d||!h||!("IntersectionObserver" in window))return;
-var mq=matchMedia("(max-width:700px)");function set(on){d.classList.toggle("is-later",mq.matches&&on);}
-new IntersectionObserver(function(es){set(es[0].intersectionRatio>0.35);},{threshold:[0,0.35,1]}).observe(h);})();</script>
+<script type="module" src="js/world-dot.mjs"></script>
 <script type="module" src="js/motion.mjs"></script>
 <script type="module" src="js/reveal.mjs"></script>
 <script type="module" src="js/g.mjs"></script>
